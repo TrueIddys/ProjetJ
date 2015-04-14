@@ -1,0 +1,5 @@
+JeuLinguistique v1.0 :
+
+- Le mode de difficulte n'est pas utilisable pour l'instant, tout comme le mode Editer ou les options.
+- Fleche gauche pour rajouter au chunk existant, fleche du bas pour ajouter un à nouveau chunk
+- La lisibilité de la partie de gauche n'est pas encore parfaite, pour obtenir une lisibilité maximale (suivre les chunks créés au fur et à mesure), il faut cliquer au début sur la partie blanche vide à gauche.
