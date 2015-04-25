@@ -23,11 +23,12 @@ public class Menu extends JFrame implements ActionListener{
 
         this.setContentPane(Menu);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setPreferredSize(new DimensionUIResource(600,400));
+        this.setPreferredSize(new DimensionUIResource(600, 400));
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
         jouerButton.addActionListener(this);
+        editerButton.addActionListener(this);
     }
 
 
@@ -35,6 +36,10 @@ public class Menu extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Jouer")){
             Selection selection = new Selection();
+            this.dispose();
+        }
+        else if (e.getActionCommand().equals("Editer")) {
+            Edit edit = new Edit();
             this.dispose();
         }
     }
