@@ -24,13 +24,14 @@ public class ChoixCorpus extends JFrame implements ActionListener{
 
     private List<JButton> listeButtonFichier;
 
-    public ChoixCorpus() {
-        super();
+    private String modeDeJeu;
 
+    public ChoixCorpus(String mode) {
+        super();
+        modeDeJeu = mode;
         listeFichier = rechercheFichier();
         listeButtonFichier = new ArrayList<JButton>();
         creerBoutonFichier();
-
         Utilities.initFenetre(this, choixCorpus);
 
         ajouterActionListener();
@@ -74,10 +75,10 @@ public class ChoixCorpus extends JFrame implements ActionListener{
         }
         else if (e.getActionCommand().equals("Aleatoire")){
             this.dispose();
-            InterfaceJeu ij = new InterfaceJeu(listeButtonFichier.get(choisirFichierAleatoirement()).getName());
+            InterfaceJeu ij = new InterfaceJeu(listeButtonFichier.get(choisirFichierAleatoirement()).getName(), modeDeJeu);
         }
         else {
-            InterfaceJeu ij = new InterfaceJeu(e.getActionCommand());
+            InterfaceJeu ij = new InterfaceJeu(e.getActionCommand(), modeDeJeu);
             this.dispose();
         }
     }
@@ -91,9 +92,9 @@ public class ChoixCorpus extends JFrame implements ActionListener{
 
     private void createUIComponents() {
         panelNiveau = new JPanel();
-        panelNiveau.setLayout(new FlowLayout(FlowLayout.CENTER));
-        panelNiveau.setBackground(new Color(73,200,232));
+        panelNiveau.setSize(new Dimension(400, 200));
+        panelNiveau.setLayout(new GridLayout(10, 1));
+        panelNiveau.setBackground(new Color(73, 200, 232));
 
-
-    }
+   }
 }

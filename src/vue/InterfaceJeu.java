@@ -9,22 +9,21 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.DimensionUIResource;
 import java.awt.*;
-import java.awt.event.AWTEventListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.List;
 
 /**
  * Created by Maxime on 03/03/2015.
  */
-public class InterfaceJeu extends JFrame implements ActionListener {
+public class InterfaceJeu extends JFrame implements ActionListener, MouseListener {
     private JPanel InterfaceJeu;
     private JPanel panelMots;
     private JPanel panelChunks;
     private JPanel panelMenu;
+    private JPanel panelLiaison;
 
     private JList liste;
+    private JList listeLiaison;
     private JLabel mot;
     private JDialog fenetreDeFin;
     private JButton boutonRetour;
@@ -35,19 +34,47 @@ public class InterfaceJeu extends JFrame implements ActionListener {
     private int compteurMot;
     private List<Chunk> listeChunks;
     private DefaultListModel modeleDeListe;
+    private DefaultListModel modeleDeListeLiaison;
+
+    private int compteurLiaison = 1;
+    private int compteurUtilisationLiaison = 0;
+    private String mode;
 
 
     /**
      * Constructeur de la fenêtre
      * @param fichierXML Fichier XML qui servira de support au niveau
      */
-    public InterfaceJeu(String fichierXML){
+    public InterfaceJeu(String fichierXML, String modeDeJeu){
         Utilities.initFenetre(this, InterfaceJeu);
+        mode = modeDeJeu;
         initListe();
         initPanelMot(fichierXML);
         initPanelMenu();
-
         ajouterListener();
+        if (mode == "relier"){
+            remplirListe();
+        }
+
+
+    }
+
+    /**
+     * Méthode qui remplit la liste avec les chunks dans le cas où le joueur joue au mode Relier
+     */
+    private void remplirListe(){
+        String chunkComplet;
+        chunkComplet = "";
+        for (Chunk chunkActuel : listeChunks){
+            List<String> listeMots = chunkActuel.getListeMots();
+            for (String mot : listeMots){
+                chunkComplet = chunkComplet + mot + " ";
+                System.out.println(chunkComplet);
+
+            }
+            modeleDeListe.insertElementAt(chunkComplet, listeChunks.indexOf(chunkActuel));
+            chunkComplet = "";
+        }
     }
 
     /**
@@ -58,13 +85,24 @@ public class InterfaceJeu extends JFrame implements ActionListener {
         modeleDeListe = new DefaultListModel();
         modeleDeListe.ensureCapacity(100);
         modeleDeListe.addElement("");
+        modeleDeListeLiaison = new DefaultListModel();
+        modeleDeListeLiaison.ensureCapacity(100);
+        for (int i = 0; i < 1000; i++)
+            modeleDeListeLiaison.addElement(" ");
+
         liste = new JList();
         liste.setModel(modeleDeListe);
+        listeLiaison = new JList();
+        listeLiaison.setModel(modeleDeListeLiaison);
+
         JScrollPane scrollPane = new JScrollPane(liste);
+        JScrollPane scrollPaneLiaison = new JScrollPane(listeLiaison);
         scrollPane.setBackground(new Color(73, 200, 232));
+        scrollPane.getVerticalScrollBar().setModel(scrollPaneLiaison.getVerticalScrollBar().getModel());
 
-
+        liste.addMouseListener(this);
         panelChunks.add(scrollPane);
+        panelLiaison.add(scrollPaneLiaison);
     }
 
     /**
@@ -88,20 +126,18 @@ public class InterfaceJeu extends JFrame implements ActionListener {
                         new AWTEventListener() {
                             public void eventDispatched(AWTEvent event) {
                                 KeyEvent ke = (KeyEvent) event;
-
                                 if (ke.getID() == KeyEvent.KEY_RELEASED) {
-                                } else if (ke.getID() == KeyEvent.KEY_PRESSED) {
-                                    if (ke.getKeyCode() == KeyEvent.VK_LEFT)
-                                    {
-                                        deplacerMot();
-                                    }
-                                    else if (ke.getKeyCode() == KeyEvent.VK_DOWN)
-                                    {
-                                        deplacerChunk();
-                                    }
-                                } else if (ke.getID() == KeyEvent.KEY_TYPED) {
-                                    System.out.println("typed");
                                 }
+                                else if (ke.getID() == KeyEvent.KEY_PRESSED) {
+                                    if (mode == "decouper" || mode == "dr") {
+                                        if (ke.getKeyCode() == KeyEvent.VK_LEFT) {
+                                            deplacerMot();
+                                        } else if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
+                                            deplacerChunk();
+                                        }
+                                    }
+                                }
+
                             }
 
 
@@ -116,11 +152,13 @@ public class InterfaceJeu extends JFrame implements ActionListener {
      */
     private void initPanelMot(String fichierXML){
         parser(fichierXML);
-        JTextArea texteExp = new JTextArea("Fleche gauche : rajouter au chunk \n Fleche du bas : ajouter à un nouveau chunk");
-        texteExp.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-        texteExp.setBackground(new Color(73, 200, 232));
-        texteExp.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panelMots.add(texteExp, BorderLayout.CENTER);
+        if (mode == "decouper" || mode == "dr") {
+            JTextArea texteExp = new JTextArea("Fleche gauche : rajouter au chunk \n Fleche du bas : ajouter à un nouveau chunk");
+            texteExp.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+            texteExp.setBackground(new Color(73, 200, 232));
+            texteExp.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panelMots.add(texteExp, BorderLayout.CENTER);
+        }
 
     }
 
@@ -204,9 +242,11 @@ public class InterfaceJeu extends JFrame implements ActionListener {
 
         listeChunks = parseur.afficheAll();
 
-        chunkCourant = listeChunks.get(compteurChunk);
-        motCourant = chunkCourant.getListeMots().get(compteurMot);
-        ajouterPremierMot(motCourant);
+        if (mode == "decouper" || mode == "dr") {
+            chunkCourant = listeChunks.get(compteurChunk);
+            motCourant = chunkCourant.getListeMots().get(compteurMot);
+            ajouterPremierMot(motCourant);
+        }
     }
 
 
@@ -242,7 +282,7 @@ public class InterfaceJeu extends JFrame implements ActionListener {
     private void createUIComponents() {
         panelMots = new JPanel();
         panelMots.setLayout(new BorderLayout());
-        panelMots.setBackground(new Color(73,200,232));
+        panelMots.setBackground(new Color(73, 200, 232));
 
 
         panelChunks = new JPanel();
@@ -252,6 +292,10 @@ public class InterfaceJeu extends JFrame implements ActionListener {
         panelMenu = new JPanel();
         panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
         panelMenu.setBackground(new Color(73, 200, 232));
+
+        panelLiaison = new JPanel();
+        panelLiaison.setLayout(new BorderLayout());
+
     }
 
     @Override
@@ -261,12 +305,47 @@ public class InterfaceJeu extends JFrame implements ActionListener {
             fenetreDeFin.dispose();
             this.dispose();
 
-            ChoixCorpus choixCorpus = new ChoixCorpus();
+            ChoixCorpus choixCorpus = new ChoixCorpus(mode);
         }
         else if (e.getActionCommand() == "Retour")
         {
             this.dispose();
-            ChoixCorpus choixCorpus = new ChoixCorpus();
+            ChoixCorpus choixCorpus = new ChoixCorpus(mode);
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (mode == "relier" || mode == "dr") {
+            if (e.getClickCount() == 1) {
+                int index = liste.locationToIndex(e.getPoint());
+                modeleDeListeLiaison.setElementAt(compteurLiaison, index);
+                compteurUtilisationLiaison++;
+                if (compteurUtilisationLiaison == 2) {
+                    compteurUtilisationLiaison = 0;
+                    compteurLiaison++;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }

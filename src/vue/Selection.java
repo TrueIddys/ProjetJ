@@ -59,8 +59,16 @@ public class Selection extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("Découper") || e.getActionCommand().equals("Découper et relier") || e.getActionCommand().equals("Relier")){
-            ChoixCorpus choixCorpus = new ChoixCorpus();
+        if (e.getActionCommand().equals("Decouper")){
+            ChoixCorpus choixCorpus = new ChoixCorpus("decouper");
+            this.dispose();
+        }
+        else if (e.getActionCommand().equals("Relier")){
+            ChoixCorpus choixCorpus = new ChoixCorpus("relier");
+            this.dispose();
+        }
+        else if (e.getActionCommand().equals("Decouper et relier")){
+            ChoixCorpus choixCorpus = new ChoixCorpus("dr");
             this.dispose();
         }
     }
