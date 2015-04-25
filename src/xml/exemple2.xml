@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<secoligo>
+<!DOCTYPE dr SYSTEM "dr.dtd">
+<dr>
 <fonctions><f id="s"/><f id="v"/><f id="i"/><f id="_s"/><f id="_v"/></fonctions>
 <p><c id="c11" c="_v"><m>Aux</m> <m>délégations</m><pd>,</pd></c> <c id="c12" c="s"><m>M.</m> <m>Jonnart</m></c> <c id="c13" c="v"><m>a</m> <m>nié</m></c> <c id="c14" c="i"><m>que</m></c> <c id="c15" c="s"><m>le</m> <m>projet</m></c> <c id="c16" c="c15"><m>d’</m><m>impôt</m></c> <c id="c17" c="c16"><m>nouveau</m></c> <c id="c18" c="v"><m>fût</m></c> <c id="c19" c="c18"><m>un</m> <m>artifice</m></c> <c id="c110" c="c19"><m>pour</m> <m>boucler</m></c> <c id="c111" c="c110"><m>le</m> <m>budget</m><pd>.</pd></c></p>
 <p><c id="c21" c="s"><m>Une</m> <m>dizaine</m></c> <c id="c22" c="c21"><m>de</m> <m>camelots</m></c> <c id="c23" c="i"><m>qui</m></c> <c id="c24" c="v"><m>criaient</m></c> <c id="c25" c="c24"><m>le</m> <m>récit</m></c> <c id="c26" c="c25"><m>d’</m><m>un</m> <m>chimérique</m> <m>attentat</m></c> <c id="c27" c="c26"><m>anarchiste</m></c> <c id="c28" c="c26"><m>à</m> <m>la</m> <m>Madeleine</m></c> <c id="c29" c="v"><m>ont</m> <m>été</m> <m>arrêtés</m><pd>.</pd></c></p>
 <p><c id="c31" c="s"><m>Une</m> <m>criminelle</m> <m>mégère</m><pd>,</pd></c> <c id="c32" c="c31"><m>Mme</m> <m>Tulle</m><pd>,</pd></c> <c id="c33" c="v"><m>a</m> <m>eu</m><pd>,</pd></c> <c id="c34" c="c33"><m>des</m> <m>assises</m></c> <c id="c35" c="c34"><m>de</m> <m>Rouen</m><pd>,</pd></c> <c id="c36" c="c33"><m>dix</m> <m>ans</m></c> <c id="c37" c="c36"><m>de</m> <m>travaux</m></c> <c id="c38" c="c37"><m>forcés</m><pd>,</pd></c> <c id="c39" c="i"><m>et</m></c> <c id="c310" c="s"><m>son</m> <m>amant</m></c> <c id="c311" c="c310"><m>cinq</m> <m>ans</m><pd>.</pd></c></p>
 <p><c id="c41" c="s"><m>Bernard</m><pd>,</pd></c> <c id="c42" c="c41"><m>à</m> <m>Essoyes</m></c> <c id="c43" c="c42"><pg>(</pg><m>Aube</m><pd>)</pd><pd>,</pd></c> <c id="c44" c="c41"><m>25</m> <m>ans</m><pd>,</pd></c> <c id="c45" c="v"><m>a</m> <m>assommé</m></c> <c id="c46" c="c45"><m>M.</m> <m>Dufert</m><pd>,</pd></c> <c id="c47" c="i"><m>qui</m></c> <c id="c48" c="v"><m>en</m> <m>a</m></c> <c id="c49" c="c48"><m>89</m><pd>,</pd></c> <c id="c410" c="i"><m>et</m></c> <c id="c411" c="v"><m>poignardé</m></c> <c id="c412" c="c411"><m>sa</m> <m>femme</m><pd>.</pd></c></p>
-</secoligo>
+</dr>
