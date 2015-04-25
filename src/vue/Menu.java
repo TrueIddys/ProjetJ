@@ -17,8 +17,6 @@ public class Menu extends JFrame implements ActionListener{
     private JButton editerButton;
     private JButton optionButton;
     private JLabel label;
-    private JComboBox comboBox1;
-
 
 
     public Menu() {
@@ -36,7 +34,7 @@ public class Menu extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Jouer")){
-            ChoixCorpus choixCorpus = new ChoixCorpus();
+            Selection selection = new Selection();
             this.dispose();
         }
     }

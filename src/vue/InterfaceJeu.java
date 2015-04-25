@@ -90,7 +90,6 @@ public class InterfaceJeu extends JFrame implements ActionListener {
                                 KeyEvent ke = (KeyEvent) event;
 
                                 if (ke.getID() == KeyEvent.KEY_RELEASED) {
-                                    System.out.println("released");
                                 } else if (ke.getID() == KeyEvent.KEY_PRESSED) {
                                     if (ke.getKeyCode() == KeyEvent.VK_LEFT)
                                     {
@@ -225,6 +224,10 @@ public class InterfaceJeu extends JFrame implements ActionListener {
         panelMots.add(mot, BorderLayout.SOUTH);
     }
 
+    /**
+     * Méthode qui définit les informations du mot à rajouter
+     * @param nom Le mot à rajouter
+     */
     public void definirLabelMot(String nom){
         mot.setName(nom);
         mot.setText(nom);
