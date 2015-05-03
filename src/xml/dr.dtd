@@ -1,0 +1,17 @@
+<!ELEMENT dr (fonctions,p+)>
+
+<!ELEMENT fonctions (f+)>
+
+<!ELEMENT f EMPTY>
+<!ATTLIST f id ID #REQUIRED>
+
+<!ELEMENT p ((c+)|((m|pd|pg)+))>
+
+<!ELEMENT c (pg*,m+,pd*)>
+<!ATTLIST c id ID #REQUIRED
+            c IDREF #REQUIRED>
+
+<!ELEMENT m (#PCDATA)>
+<!ELEMENT pg (#PCDATA)>
+<!ELEMENT pd (#PCDATA)>
+

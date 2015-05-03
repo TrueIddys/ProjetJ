@@ -85,24 +85,30 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
         modeleDeListe = new DefaultListModel();
         modeleDeListe.ensureCapacity(100);
         modeleDeListe.addElement("");
-        modeleDeListeLiaison = new DefaultListModel();
-        modeleDeListeLiaison.ensureCapacity(100);
-        for (int i = 0; i < 1000; i++)
-            modeleDeListeLiaison.addElement(" ");
-
         liste = new JList();
         liste.setModel(modeleDeListe);
-        listeLiaison = new JList();
-        listeLiaison.setModel(modeleDeListeLiaison);
+
 
         JScrollPane scrollPane = new JScrollPane(liste);
-        JScrollPane scrollPaneLiaison = new JScrollPane(listeLiaison);
-        scrollPane.setBackground(new Color(73, 200, 232));
-        scrollPane.getVerticalScrollBar().setModel(scrollPaneLiaison.getVerticalScrollBar().getModel());
 
+        scrollPane.setBackground(new Color(73, 200, 232));
+
+        if (mode == "relier"){
+            modeleDeListeLiaison = new DefaultListModel();
+            modeleDeListeLiaison.ensureCapacity(100);
+            for (int i = 0; i < 1000; i++)
+                modeleDeListeLiaison.addElement(" ");
+            listeLiaison = new JList();
+            listeLiaison.setModel(modeleDeListeLiaison);
+            JScrollPane scrollPaneLiaison = new JScrollPane(listeLiaison);
+            scrollPane.getVerticalScrollBar().setModel(scrollPaneLiaison.getVerticalScrollBar().getModel());
+            scrollPaneLiaison.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+            panelLiaison.add(scrollPaneLiaison);
+
+
+        }
         liste.addMouseListener(this);
         panelChunks.add(scrollPane);
-        panelLiaison.add(scrollPaneLiaison);
     }
 
     /**
@@ -112,7 +118,10 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
     {
         boutonRetour = new JButton("Retour");
         boutonRetour.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panelMenu.add(boutonRetour, BorderLayout.CENTER);
+        JPanel panelRetour = new JPanel();
+        panelRetour.add(boutonRetour, BorderLayout.CENTER);
+        panelRetour.setBackground(Utilities.CouleurPanelInterface);
+        panelMenu.add(panelRetour, BorderLayout.SOUTH);
     }
 
     /**
@@ -152,13 +161,34 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
      */
     private void initPanelMot(String fichierXML){
         parser(fichierXML);
-        if (mode == "decouper" || mode == "dr") {
-            JTextArea texteExp = new JTextArea("Fleche gauche : rajouter au chunk \n Fleche du bas : ajouter à un nouveau chunk");
-            texteExp.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-            texteExp.setBackground(new Color(73, 200, 232));
-            texteExp.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panelMots.add(texteExp, BorderLayout.CENTER);
+        String instruction = "";
+        if (mode == "relier"){
+            instruction = "Relier les chunks en cliquant \n sur 2 chunks differents.\nLes liaisons s'affichent à\n droite sous forme de chiffres";
         }
+        else if (mode == "decouper") {
+            instruction = "Fleche gauche : rajouter au chunk \n" +
+                    " Fleche du bas : ajouter à un nouveau chunk";
+
+        }
+        else {
+            instruction = "Fleche gauche : rajouter au chunk" +
+                    "\n" +
+                    "Fleche du bas : ajouter à un nouveau chunk \n" +
+                    "Relier les chunks en cliquant \n" +
+                    " sur 2 chunks differents.\n" +
+                    "Les liaisons s'affichent à\n" +
+                    " droite sous forme de chiffres";
+        }
+        JTextArea texteExp = new JTextArea(instruction);
+        texteExp.setEditable(false);
+        texteExp.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        texteExp.setBackground(Utilities.CouleurPanelInterface);
+        JPanel panelTextExp = new JPanel();
+        panelTextExp.add(texteExp, BorderLayout.CENTER);
+        panelTextExp.setBackground(Utilities.CouleurPanelInterface);
+        panelMots.add(panelTextExp, BorderLayout.CENTER);
+
+
 
     }
 
@@ -282,16 +312,16 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
     private void createUIComponents() {
         panelMots = new JPanel();
         panelMots.setLayout(new BorderLayout());
-        panelMots.setBackground(new Color(73, 200, 232));
+        panelMots.setBackground(Utilities.CouleurPanelInterface);
 
 
         panelChunks = new JPanel();
         panelChunks.setLayout(new BorderLayout());
-        panelChunks.setBackground(new Color(73, 200, 232));
+        panelChunks.setBackground(Utilities.CouleurPanelInterface);
 
         panelMenu = new JPanel();
-        panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
-        panelMenu.setBackground(new Color(73, 200, 232));
+        panelMenu.setLayout(new BorderLayout());
+        panelMenu.setBackground(Utilities.CouleurPanelInterface);
 
         panelLiaison = new JPanel();
         panelLiaison.setLayout(new BorderLayout());
