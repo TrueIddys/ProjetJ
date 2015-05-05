@@ -60,7 +60,7 @@ public class ChoixCorpus extends JFrame implements ActionListener{
         File[] listeFiles = repertoire.listFiles();
 
         for (File file : listeFiles){
-            if (file.isFile()){
+            if (!file.getName().contains("_pour_edition.xml") && !file.getName().contains("dtd")){
                 listeFichiers.add(file);
             }
         }

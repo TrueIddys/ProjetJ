@@ -18,8 +18,8 @@ public class CreateParser {
 
     public CreateParser(String fichierXml){
 
-        String débutChemin = "src/xml/";
-        String cheminComplet = débutChemin.concat(fichierXml);
+        String debutChemin = "";
+        String cheminComplet = debutChemin.concat(fichierXml);
         SAXBuilder sxb = new SAXBuilder();
         try
         {
