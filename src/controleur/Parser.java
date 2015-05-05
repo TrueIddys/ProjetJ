@@ -17,6 +17,8 @@ public class Parser {
 
     static org.jdom2.Document document;
     static Element racine;
+    private String ponctuationGauche = "";
+    private boolean ponctuation = false;
 
     public Parser(String fichierXml){
 
@@ -63,8 +65,19 @@ public class Parser {
                     {
                         chunkLu.concatenerDernierMot(courantMot.getText()); //on le concatene au mot précédent
                     }
+                    else if (courantMot.getName() == "pg"){
+                        ponctuationGauche = courantMot.getText();
+                        ponctuation = true;
+                    }
                     else {
-                        chunkLu.addMot(courantMot.getText()); //sinon on rajoute le mot au chunk
+                        if (ponctuation){
+                            chunkLu.addMot(ponctuationGauche.concat(courantMot.getText()));
+                            ponctuation = false;
+                            ponctuationGauche = "";
+                        }
+                        else {
+                            chunkLu.addMot(courantMot.getText()); //sinon on rajoute le mot au chunk
+                        }
                     }
                 }
                 listeChunks.add(chunkLu); //on ajoute le chunk à la liste de chunk
