@@ -19,9 +19,9 @@ public class Chunk {
 
     public Chunk(){
         listeMots = new ArrayList<String>();
-        type = "?";
+        type = "?";/*type ou liaison du chunk*/
         id = "c00";
-        lien = ""; /*il s'agit de l'id du chunck à qui il se relie*/
+
     }
 
     public void addMot(String mot)
@@ -35,10 +35,6 @@ public class Chunk {
 
     public void setchunk(String ident){
         this.id = ident;
-    }
-
-    public void setliaison(String id){
-        this.lien = id;
     }
 
     public List<String> getListeMots() {
