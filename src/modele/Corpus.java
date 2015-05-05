@@ -22,7 +22,7 @@ public class Corpus {
     /*_____________*/
 
     private List<Chunk> listeChunks;
-
+    /* private List<String> typeChunks; */
     public List<Chunk> getListeChunks() {
         return listeChunks;
     }

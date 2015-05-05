@@ -11,17 +11,9 @@
     </properties>
     <border type="none"/>
     <children>
-      <component id="217ee" class="javax.swing.JButton" binding="boutonD_R">
-        <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Decouper et relier"/>
-        </properties>
-      </component>
       <component id="e98e5" class="javax.swing.JButton" binding="boutonDecouper">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Decouper"/>
@@ -29,10 +21,18 @@
       </component>
       <component id="d5263" class="javax.swing.JButton" binding="boutonRelier">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Relier"/>
+        </properties>
+      </component>
+      <component id="217ee" class="javax.swing.JButton" binding="boutonD_R">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Decouper et relier"/>
         </properties>
       </component>
     </children>

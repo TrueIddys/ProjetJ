@@ -4,7 +4,6 @@ import oracle.jrockit.jfr.JFR;
 
 import javax.swing.*;
 import javax.swing.plaf.DimensionUIResource;
-import javax.swing.text.Utilities;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,13 +21,12 @@ public class Menu extends JFrame implements ActionListener{
 
     public Menu() {
 
-//        this.setContentPane(Menu);
-//        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        this.setPreferredSize(new DimensionUIResource(600, 400));
-//        this.pack();
-//        this.setLocationRelativeTo(null);
-//        this.setVisible(true);
-        controleur.Utilities.initFenetre(this, Menu);
+        this.setContentPane(Menu);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setPreferredSize(new DimensionUIResource(600, 400));
+        this.pack();
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
         jouerButton.addActionListener(this);
         editerButton.addActionListener(this);
     }

@@ -24,7 +24,7 @@ public class ChoixCorpus extends JFrame implements ActionListener{
 
     private List<JButton> listeButtonFichier;
 
-    private String modeDeJeu = "";
+    private String modeDeJeu;
 
     public ChoixCorpus(String mode) {
         super();
@@ -60,7 +60,7 @@ public class ChoixCorpus extends JFrame implements ActionListener{
         File[] listeFiles = repertoire.listFiles();
 
         for (File file : listeFiles){
-            if (!file.getName().contains("_pour_edition.xml") && !file.getName().contains("dtd")){
+            if (file.isFile()){
                 listeFichiers.add(file);
             }
         }

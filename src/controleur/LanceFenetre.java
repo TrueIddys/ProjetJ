@@ -9,5 +9,6 @@ public class LanceFenetre {
 
     public static void main(String[] args) {
         Menu menu = new Menu();
+//        Parser testParser = new Parser();
     }
 }
