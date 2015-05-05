@@ -1,43 +1,55 @@
 package vue;
 
 import controleur.Parser;
+import controleur.UpdateUITask;
 import controleur.Utilities;
 import modele.Chunk;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.plaf.DimensionUIResource;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 import java.util.List;
+import java.util.Timer;
 
 /**
  * Created by Maxime on 03/03/2015.
  */
 public class InterfaceJeu extends JFrame implements ActionListener, MouseListener {
-    private JPanel InterfaceJeu;
+    private JPanel Interface;
     private JPanel panelMots;
     private JPanel panelChunks;
     private JPanel panelMenu;
     private JPanel panelLiaison;
+    private JPanel panelErreur;
+
+
+    private java.util.Timer timer = new Timer();
 
     private JList liste;
     private JList listeLiaison;
     private JLabel mot;
+    private JLabel chrono;
+    private JLabel nombreErreur;
     private JDialog fenetreDeFin;
     private JButton boutonRetour;
 
     private Chunk chunkCourant;
     private String motCourant;
-    private int compteurChunk;
-    private int compteurMot;
+
     private List<Chunk> listeChunks;
     private DefaultListModel modeleDeListe;
     private DefaultListModel modeleDeListeLiaison;
 
     private int compteurLiaison = 1;
     private int compteurUtilisationLiaison = 0;
+    private int compteurChunk;
+    private int compteurMot;
+    private int compteurErreur = 0;
+    private boolean boolChunk = false;
     private String mode;
 
 
@@ -46,18 +58,51 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
      * @param fichierXML Fichier XML qui servira de support au niveau
      */
     public InterfaceJeu(String fichierXML, String modeDeJeu){
-        Utilities.initFenetre(this, InterfaceJeu);
+        super();
+        Utilities.initFenetre(this, Interface);
         mode = modeDeJeu;
         initListe();
         initPanelMot(fichierXML);
+        initPanelErreur();
         initPanelMenu();
+        initChrono();
         ajouterListener();
         if (mode == "relier"){
             remplirListe();
         }
+   }
+
+    /**
+     * Méthode qui initialise le panel d'erreurs
+     */
+    private void initPanelErreur() {
+        panelErreur = new JPanel();
+        panelErreur.setBackground(Utilities.CouleurPanelInterface);
+        JLabel nbErreur = new JLabel("Nombres d'erreurs : ", JLabel.CENTER);
+        panelErreur.add(nbErreur);
+        nombreErreur = new JLabel(String.valueOf(compteurErreur));
+        panelErreur.add(nombreErreur);
+
 
 
     }
+
+
+    /**
+     * Méthode qui sert à créer le chronomètre
+     */
+    private void initChrono() {
+        chrono = new JLabel(" ", JLabel.CENTER);
+        JLabel nomChrono = new JLabel("Chronomètre", JLabel.CENTER);
+        JPanel panelChrono = new JPanel();
+        panelChrono = new JPanel(new GridLayout(2,1));
+        panelChrono.add(nomChrono);
+        panelChrono.add(chrono);
+        panelChrono.setBackground(Utilities.CouleurPanelInterface);
+        panelMenu.add(panelChrono, BorderLayout.NORTH);
+        timer.schedule(new UpdateUITask(chrono), 0, 1000);
+    }
+
 
     /**
      * Méthode qui remplit la liste avec les chunks dans le cas où le joueur joue au mode Relier
@@ -69,8 +114,6 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
             List<String> listeMots = chunkActuel.getListeMots();
             for (String mot : listeMots){
                 chunkComplet = chunkComplet + mot + " ";
-                System.out.println(chunkComplet);
-
             }
             modeleDeListe.insertElementAt(chunkComplet, listeChunks.indexOf(chunkActuel));
             chunkComplet = "";
@@ -93,7 +136,7 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
 
         scrollPane.setBackground(new Color(73, 200, 232));
 
-        if (mode == "relier"){
+        if (mode == "relier" || mode == "dr"){
             modeleDeListeLiaison = new DefaultListModel();
             modeleDeListeLiaison.ensureCapacity(100);
             for (int i = 0; i < 1000; i++)
@@ -104,6 +147,7 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
             scrollPane.getVerticalScrollBar().setModel(scrollPaneLiaison.getVerticalScrollBar().getModel());
             scrollPaneLiaison.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
             panelLiaison.add(scrollPaneLiaison);
+            listeLiaison.addMouseListener(this);
 
 
         }
@@ -122,6 +166,7 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
         panelRetour.add(boutonRetour, BorderLayout.CENTER);
         panelRetour.setBackground(Utilities.CouleurPanelInterface);
         panelMenu.add(panelRetour, BorderLayout.SOUTH);
+        panelMenu.add(panelErreur);
     }
 
     /**
@@ -132,23 +177,18 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
     {
         Toolkit.getDefaultToolkit().addAWTEventListener
                 (
-                        new AWTEventListener() {
-                            public void eventDispatched(AWTEvent event) {
-                                KeyEvent ke = (KeyEvent) event;
-                                if (ke.getID() == KeyEvent.KEY_RELEASED) {
-                                }
-                                else if (ke.getID() == KeyEvent.KEY_PRESSED) {
-                                    if (mode == "decouper" || mode == "dr") {
-                                        if (ke.getKeyCode() == KeyEvent.VK_LEFT) {
-                                            deplacerMot();
-                                        } else if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
-                                            deplacerChunk();
-                                        }
+                        event -> {
+                            KeyEvent ke = (KeyEvent) event;
+                            if (ke.getID() == KeyEvent.KEY_RELEASED) {
+                            } else if (ke.getID() == KeyEvent.KEY_PRESSED) {
+                                if (mode == "decouper" || mode == "dr") {
+                                    if (ke.getKeyCode() == KeyEvent.VK_LEFT) {
+                                        deplacerMot();
+                                    } else if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
+                                        deplacerChunk();
                                     }
                                 }
-
                             }
-
 
                         }, AWTEvent.KEY_EVENT_MASK);
 
@@ -163,7 +203,8 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
         parser(fichierXML);
         String instruction = "";
         if (mode == "relier"){
-            instruction = "Relier les chunks en cliquant \n sur 2 chunks differents.\nLes liaisons s'affichent à\n droite sous forme de chiffres";
+            instruction = "Relier les chunks en cliquant \n sur 2 chunks differents.\n Les liaisons s'affichent à\n droite sous forme de chiffres. \n" +
+                    "Vous pouvez supprimer 2 liaisons en \n cliquant sur leurs chiffres correspondants.";
         }
         else if (mode == "decouper") {
             instruction = "Fleche gauche : rajouter au chunk \n" +
@@ -177,7 +218,8 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
                     "Relier les chunks en cliquant \n" +
                     " sur 2 chunks differents.\n" +
                     "Les liaisons s'affichent à\n" +
-                    " droite sous forme de chiffres";
+                    " droite sous forme de chiffres.\n" +
+                    "Vous pouvez supprimer 2 liaisons \n en cliquant \n sur leurs chiffres correspondants.";
         }
         JTextArea texteExp = new JTextArea(instruction);
         texteExp.setEditable(false);
@@ -197,9 +239,25 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
      * Fonction qui permet de rajouter un nouveau chunk avec le mot courant
      */
     private void deplacerChunk() {
-        String motCourant = panelMots.getComponent(0).getName();
-        modeleDeListe.addElement(motCourant);
-        changerMot();
+
+        if (boolChunk == true){
+            boolChunk = false;
+        }
+        if (chunkCourant.getListeMots().contains(motCourant) && chunkCourant.getListeMots().indexOf(motCourant) != 0){
+            placerErreur("Ce mot ne constitue \n pas un nouveau chunk");
+        }
+        else
+        {
+            if (panelErreur.getComponentCount() == 3)
+            {
+                panelErreur.remove(2);
+                panelErreur.updateUI();
+            }
+            String motCourant = panelMots.getComponent(0).getName();
+            modeleDeListe.addElement(motCourant);
+            changerMot();
+        }
+
     }
 
 
@@ -207,9 +265,41 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
      * Fonction qui permet de faire rentrer un mot dans le chunk courant
      */
     private void deplacerMot() {
-        String motCourant = panelMots.getComponent(0).getName();
-        modeleDeListe.setElementAt(((String) modeleDeListe.lastElement()).concat(" " + motCourant), modeleDeListe.getSize()-1);
-        changerMot();
+        if (boolChunk == true)
+        {
+            placerErreur("Ce mot ne doit pas \n rentrer dans ce chunk");
+        }
+        else
+        {
+            if (panelErreur.getComponentCount() == 3)
+            {
+                panelErreur.remove(2);
+                panelErreur.updateUI();
+            }
+            String motCourant = panelMots.getComponent(0).getName();
+            modeleDeListe.setElementAt(((String) modeleDeListe.lastElement()).concat(" " + motCourant), modeleDeListe.getSize() - 1);
+            changerMot();
+        }
+
+    }
+
+
+    /**
+     * Fonction permettant de placer une erreur dans le JPanel correspondant
+     * @param erreur
+     */
+    private void placerErreur(String erreur){
+        JTextArea textErreur = new JTextArea(erreur);
+        textErreur.setBackground(Utilities.CouleurPanelInterface);
+        textErreur.setEditable(false);
+        textErreur.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        if (panelErreur.getComponentCount() == 3){
+            panelErreur.remove(2);
+        }
+        compteurErreur++;
+        nombreErreur.setText(String.valueOf(compteurErreur));
+        panelErreur.updateUI();
+        panelErreur.add(textErreur);
 
     }
 
@@ -232,11 +322,12 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
                 return;
 
             }
-            
+
             chunkCourant = listeChunks.get(compteurChunk);
+            boolChunk = true;
             compteurMot = 0;
         }
-        
+
         motCourant = chunkCourant.getListeMots().get(compteurMot);
         definirLabelMot(motCourant);
     }
@@ -245,16 +336,24 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
      * Méthode qui initialise la fenêtre de fin
      */
     private void ecranDeFin() {
+        timer.cancel();
         fenetreDeFin = new JDialog(this);
         JPanel panelDeFin = new JPanel(new BorderLayout());
+        JPanel panelBouton = new JPanel();
+
         JTextArea texteDeFin = new JTextArea();
-        texteDeFin.setText("Bravo ! Vous avez fini ce niveau. Cliquez sur OK pour retournez à l'écran de choix de niveau.");
+        texteDeFin.setText("Bravo ! Vous avez fini ce niveau en "+chrono.getText()+" secondes ! \n Vous avez fait "+compteurErreur+" erreurs. \n Cliquez sur OK pour retournez à l'écran de choix de niveau.");
+        texteDeFin.setMargin(new Insets(5, 5, 5, 5));
+        texteDeFin.setEditable(false);
+
         JButton boutonOk = new JButton("OK");
         boutonOk.setVerticalAlignment(SwingConstants.CENTER);
         boutonOk.setHorizontalAlignment(SwingConstants.CENTER);
         boutonOk.addActionListener(this);
+
+        panelBouton.add(boutonOk);
         panelDeFin.add(texteDeFin, BorderLayout.NORTH);
-        panelDeFin.add(boutonOk, BorderLayout.SOUTH);
+        panelDeFin.add(panelBouton, BorderLayout.SOUTH);
         fenetreDeFin.add(panelDeFin);
         fenetreDeFin.pack();
         fenetreDeFin.setLocationRelativeTo(null);
@@ -320,7 +419,7 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
         panelChunks.setBackground(Utilities.CouleurPanelInterface);
 
         panelMenu = new JPanel();
-        panelMenu.setLayout(new BorderLayout());
+        panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
         panelMenu.setBackground(Utilities.CouleurPanelInterface);
 
         panelLiaison = new JPanel();
@@ -339,22 +438,38 @@ public class InterfaceJeu extends JFrame implements ActionListener, MouseListene
         }
         else if (e.getActionCommand() == "Retour")
         {
+            timer.cancel();
+            timer.purge();
             this.dispose();
             ChoixCorpus choixCorpus = new ChoixCorpus(mode);
+
+
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+
         if (mode == "relier" || mode == "dr") {
-            if (e.getClickCount() == 1) {
-                int index = liste.locationToIndex(e.getPoint());
-                modeleDeListeLiaison.setElementAt(compteurLiaison, index);
-                compteurUtilisationLiaison++;
-                if (compteurUtilisationLiaison == 2) {
-                    compteurUtilisationLiaison = 0;
-                    compteurLiaison++;
+            if (e.getButton() == MouseEvent.BUTTON1){
+                if (e.getClickCount() == 1) {
+                    int index = liste.locationToIndex(e.getPoint());
+                    modeleDeListeLiaison.setElementAt(compteurLiaison, index);
+                    compteurUtilisationLiaison++;
+                    if (compteurUtilisationLiaison == 2) {
+                        compteurUtilisationLiaison = 0;
+                        compteurLiaison++;
+
+
+                    }
                 }
+            }
+            else if (e.getButton() == MouseEvent.BUTTON3){
+                int index = listeLiaison.locationToIndex(e.getPoint());
+                Object element = modeleDeListeLiaison.get(index);
+                modeleDeListeLiaison.setElementAt(" ", index);
+                index = modeleDeListeLiaison.indexOf(element);
+                modeleDeListeLiaison.setElementAt(" ", index);
             }
         }
     }
