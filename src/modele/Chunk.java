@@ -15,11 +15,10 @@ public class Chunk {
     private List<String> listeMots;
     private String type;
     private String id;
-    private String lien;
 
     public Chunk(){
         listeMots = new ArrayList<String>();
-        type = "?";/*type ou liaison du chunk*/
+        type = "";/*type ou liaison du chunk*/
         id = "c00";
 
     }
