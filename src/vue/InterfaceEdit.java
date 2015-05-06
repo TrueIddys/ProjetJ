@@ -214,9 +214,9 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand() == "OK")
+        if (e.getActionCommand() == "Fin")
         {
-            fenetreDeFin.dispose();
+
             this.dispose();
 
             Edit edit = new Edit();
