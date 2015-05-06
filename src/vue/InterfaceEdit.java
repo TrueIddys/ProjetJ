@@ -4,6 +4,7 @@ import controleur.CreateParser;
 import controleur.Utilities;
 import modele.Chunk;
 import modele.Corpus;
+import sun.font.TrueTypeFont;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +26,8 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private JPanel interfaceEdit;
     private JPanel panelChunks;
     private JPanel panelLiaison;
-    private JPanel panelMots;
+    private JPanel panelMot;
+    private JButton boutonFinir;
     private JButton boutonRetour;
     private JList liste;
     private JList listeLiaison;
@@ -48,6 +50,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     /*Initialisation de la fenêtre */
     public InterfaceEdit(String fichierXML){
         Utilities.initFenetre(this, interfaceEdit);
+        boutonFinir.setVisible(false);
         initListe();
         initPanelMot(fichierXML);
         ajouterListener();
@@ -105,7 +108,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     }
 
     private void deplacerMot() {
-        String motCourant = panelMots.getComponent(0).getName();
+        String motCourant = panelMot.getComponent(0).getName();
         modeleDeListe.setElementAt(((String) modeleDeListe.lastElement()).concat(" " + motCourant), modeleDeListe.getSize()-1);
         changerMot();
 
@@ -117,30 +120,21 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private void changerMot() {
         compteurMot++;
 
-        if (chunkCourant.getListeMots().size() <= compteurMot)
+        if (listeMot.size() <= compteurMot)
         {
-            compteurChunk++;
-
-            if (listeChunks.size() <= compteurChunk)
-            {
-                compteurChunk = 0;
-                compteurMot = 0;
-                ecranDeFin();
-
-                return;
-
-            }
-
-            chunkCourant = listeChunks.get(compteurChunk);
-            compteurMot = 0;
+            motCourant = listeMot.get(compteurMot);
+        }
+        else{
+            boutonFinir.setVisible(true);
+            return;
         }
 
-        motCourant = chunkCourant.getListeMots().get(compteurMot);
         definirLabelMot(motCourant);
     }
 
     private void deplacerChunk() {
-        String motCourant = panelMots.getComponent(0).getName();
+        compteurChunk++;
+        String motCourant = panelMot.getComponent(0).getName();
         modeleDeListe.addElement(motCourant);
         changerMot();
     }
@@ -151,7 +145,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         texteExp.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         texteExp.setBackground(new Color(73, 200, 232));
         texteExp.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panelMots.add(texteExp, BorderLayout.CENTER);
+        panelMot.add(texteExp, BorderLayout.CENTER);
 
 
     }
@@ -161,8 +155,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
         listeMot = createparseur.afficheAll();
 
-            chunkCourant = listeChunks.get(compteurChunk);
-            motCourant = chunkCourant.getListeMots().get(compteurMot);
+            motCourant = listeMot.get(compteurChunk);
             ajouterPremierMot(motCourant);
     }
 
@@ -173,7 +166,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         mot.setVerticalAlignment(JLabel.CENTER);
         mot.setAlignmentX(Component.CENTER_ALIGNMENT);
         mot.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        panelMots.add(mot, BorderLayout.SOUTH);
+        panelMot.add(mot, BorderLayout.SOUTH);
     }
 
     public void definirLabelMot(String nom){
@@ -203,7 +196,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         fenetreDeFin = new JDialog(this);
         JPanel panelDeFin = new JPanel(new BorderLayout());
         JTextArea texteDeFin = new JTextArea();
-        texteDeFin.setText("Bravo ! Vous avez fini ce niveau. Cliquez sur OK pour retournez à l'écran de choix de niveau.");
+        texteDeFin.setText("Vous avez terminé l'édition du corpus , celui peut etre retrouver dans les fichiers du jeu.");
         JButton boutonOk = new JButton("OK");
         boutonOk.setVerticalAlignment(SwingConstants.CENTER);
         boutonOk.setHorizontalAlignment(SwingConstants.CENTER);
