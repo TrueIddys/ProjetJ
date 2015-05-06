@@ -70,7 +70,8 @@ public class Edit extends JFrame implements ActionListener  {
             Menu menu = new Menu();
         }
         else {
-            InterfaceJeu ij = new InterfaceJeu(e.getActionCommand(), "edition");
+            System.out.println(1);
+            InterfaceEdit interfaceEdit  = new InterfaceEdit(e.getActionCommand());
             this.dispose();
         }
     }

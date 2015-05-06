@@ -17,9 +17,8 @@ import java.util.List;
  * Created by SIN on 27/04/2015.
  *
  * travail à faire : initialiser les liste , créer une liste de mots ,
- * creer un parseur inversé (class creatparser)
- * ajouté les méthode set au chunk voir créer un nouveau modèle pour Aedit méthode set principalement
- * le createparser doit remplir le modèle Aedit
+ * creer un parseur inversé (class createparser)
+ *
  */
 
 public class InterfaceEdit extends JFrame implements ActionListener, MouseListener{
@@ -49,8 +48,12 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
     /*Initialisation de la fenêtre */
     public InterfaceEdit(String fichierXML){
+        super();
+        System.out.println(2);
         Utilities.initFenetre(this, interfaceEdit);
+        System.out.println(3);
         boutonFinir.setVisible(false);
+        System.out.println(4);
         initListe();
         initPanelMot(fichierXML);
         ajouterListener();
@@ -109,7 +112,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
     private void deplacerMot() {
         String motCourant = panelMot.getComponent(0).getName();
-        modeleDeListe.setElementAt(((String) modeleDeListe.lastElement()).concat(" " + motCourant), modeleDeListe.getSize()-1);
+        modeleDeListe.setElementAt(((String) modeleDeListe.lastElement()).concat(" " + motCourant), modeleDeListe.getSize() - 1);
         changerMot();
 
     }
@@ -220,8 +223,9 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         }
         else if (e.getActionCommand() == "Retour")
         {
+            /*Edit edit = new Edit();*/
             this.dispose();
-            Edit edit = new Edit();
+
         }
     }
 
