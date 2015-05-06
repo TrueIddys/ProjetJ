@@ -18,7 +18,7 @@ public class CreateParser {
 
     public CreateParser(String fichierXml){
 
-        String debutChemin = "";
+        String debutChemin = "src/xml/";
         String cheminComplet = debutChemin.concat(fichierXml);
         SAXBuilder sxb = new SAXBuilder();
         try
@@ -47,11 +47,11 @@ public class CreateParser {
             Iterator iMot = listeMot.iterator();
             while (iMot.hasNext())
             {
-                String courantMot = (String) iMot.next();
-                listeMots.add(courantMot);
+                Element courantMot = (Element) iMot.next();
+                listeMots.add(courantMot.getText());
             }
         }
-
+        /*System.out.println(listeMots);*/
         return listeMots; //on retourne la liste de mots.
     }
 }

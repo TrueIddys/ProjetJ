@@ -49,11 +49,8 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     /*Initialisation de la fenêtre */
     public InterfaceEdit(String fichierXML){
         super();
-        System.out.println(2);
         Utilities.initFenetre(this, interfaceEdit);
-        System.out.println(3);
         boutonFinir.setVisible(false);
-        System.out.println(4);
         initListe();
         initPanelMot(fichierXML);
         ajouterListener();
@@ -96,9 +93,15 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
                                 } else if (ke.getID() == KeyEvent.KEY_PRESSED) {
 
                                     if (ke.getKeyCode() == KeyEvent.VK_LEFT) {
-                                        deplacerMot();
+                                        if(compteurMot<listeMot.size())
+                                        {
+                                            deplacerMot();
+                                        }
                                     } else if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
-                                        deplacerChunk();
+                                        if(compteurMot<listeMot.size())
+                                        {
+                                            deplacerChunk();
+                                        }
 
                                     }
 
@@ -121,18 +124,21 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
      * Fonction qui change de mot après avoir appuyé sur une des fleches
      */
     private void changerMot() {
-        compteurMot++;
 
-        if (listeMot.size() <= compteurMot)
+        if (listeMot.size()-1 > compteurMot)
         {
+            compteurMot++;
             motCourant = listeMot.get(compteurMot);
+            definirLabelMot(motCourant);
         }
         else{
             boutonFinir.setVisible(true);
+            definirLabelMot("");
             return;
+
         }
 
-        definirLabelMot(motCourant);
+
     }
 
     private void deplacerChunk() {
@@ -158,7 +164,10 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
         listeMot = createparseur.afficheAll();
 
+
             motCourant = listeMot.get(compteurChunk);
+            /*System.out.println(motCourant);
+            System.out.println(motCourant.getClass());*/
             ajouterPremierMot(motCourant);
     }
 
@@ -188,6 +197,11 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         panelChunks = new JPanel();
         panelChunks.setLayout(new BorderLayout());
         panelChunks.setBackground(new Color(60, 63, 65));
+
+        panelMot = new JPanel();
+        panelMot.setLayout(new BorderLayout());
+        panelMot.setBackground(new Color(60, 63, 65));
+
 
     }
 
