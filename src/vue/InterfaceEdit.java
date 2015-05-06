@@ -93,24 +93,38 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
                                 } else if (ke.getID() == KeyEvent.KEY_PRESSED) {
 
                                     if (ke.getKeyCode() == KeyEvent.VK_LEFT) {
-                                        if(compteurMot<listeMot.size())
-                                        {
+                                        if (compteurMot < listeMot.size()) {
                                             deplacerMot();
                                         }
                                     } else if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
-                                        if(compteurMot<listeMot.size())
-                                        {
+                                        if (compteurMot < listeMot.size()) {
                                             deplacerChunk();
+                                        }
+
+                                    } else if (ke.getKeyCode() == KeyEvent.VK_UP) {
+                                        if (compteurMot > 0) {
+                                            annuler();
                                         }
 
                                     }
 
                                 }
                             }
-
-                        } , AWTEvent.KEY_EVENT_MASK);
+                        }, AWTEvent.KEY_EVENT_MASK
+                );
 
         boutonRetour.addActionListener(this);
+    }
+
+    private void annuler() {
+
+        /*compteurMot--;
+        motCourant = listeMot.get(compteurMot);
+        definirLabelMot(motCourant);
+        modeleDeListe.setElementAt(((String) modeleDeListe.lastElement()).subSequence(0, (int) modeleDeListe.lastElement()).length()- motCourant.length()- 1, modeleDeListe.getSize() - 1);
+        if(((String) modeleDeListe.lastElement()).isEmpty()){
+            compteurChunk--;
+        }*/
     }
 
     private void deplacerMot() {
@@ -150,7 +164,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
     private void initPanelMot(String fichierXML){
         createparser(fichierXML);
-        JTextArea texteExp = new JTextArea("Fleche gauche : rajouter au chunk \n Fleche du bas : ajouter à un nouveau chunk");
+        JTextArea texteExp = new JTextArea("Fleche gauche : rajouter au chunk \n Fleche du bas : ajouter à un nouveau chunk \n Fleche de haut : annuler la dernière opération");
         texteExp.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         texteExp.setBackground(new Color(73, 200, 232));
         texteExp.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -231,8 +245,15 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         if (e.getActionCommand() == "Fin")
         {
 
-            this.dispose();
+            for(int i=0;i<compteurChunk;i++ ){
+                Chunk chunck = new Chunk();
+                chunck.settype("");
+                chunck.setchunk("c"+ i);
+                listeChunks.add(chunck);
+            }
+            /*ici on a le parser inverse : on va utiliser une methode qui creer le fichier*/
 
+            this.dispose();
             Edit edit = new Edit();
         }
         else if (e.getActionCommand() == "Retour")

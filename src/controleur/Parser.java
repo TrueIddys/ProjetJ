@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Created by Maxime on 03/03/2015.
  */
+/*
 public class Parser {
 
     static org.jdom2.Document document;
@@ -76,4 +77,4 @@ public class Parser {
         return listeChunks; //on retourne la liste de chunk
     }
 
-}
+}*/
