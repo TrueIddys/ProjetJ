@@ -261,12 +261,6 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             this.dispose();
 
         }
-        else if (e.getActionCommand() == "Lier à la liaison courante")
-        {
-
-            jpop.setVisible(false);
-
-        }
         else if (e.getActionCommand() == "Suprimmer la liaison")
         {
 
@@ -311,13 +305,12 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         else if (e.getButton() == MouseEvent.BUTTON3){
             jpop = new JPopupMenu();
             /*création des bouton du menu*/
-            JMenuItem menuLier = new JMenuItem( "Lier à la liaison courante" );
             JMenuItem menuSupprimLiaison = new JMenuItem( "Suprimmer la liaison" );
             JMenuItem menuNouvelleLiaison = new JMenuItem( "Nouvelle liaison" );
             JMenuItem menuEditerFonction = new JMenuItem( "Editer la fonction" );
             JMenuItem annulPopup = new JMenuItem( "Annuler" );
 
-            jpop.add(menuLier);
+
             jpop.add(menuSupprimLiaison);
             jpop.add(menuNouvelleLiaison);
             jpop.add(menuEditerFonction);
@@ -328,7 +321,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             jpop.setVisible(true);
 
             enableEvents(AWTEvent.MOUSE_EVENT_MASK);
-            menuLier.addActionListener( this);
+
             menuSupprimLiaison.addActionListener( this);
             menuNouvelleLiaison.addActionListener( this);
             menuEditerFonction.addActionListener( this);
