@@ -35,6 +35,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private List < String > listeMot;
     private Chunk chunkCourant;
     private String motCourant;
+    private JPopupMenu jpop;
 
     private int compteurChunk;
     private int compteurMot;
@@ -260,21 +261,82 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             this.dispose();
 
         }
+        else if (e.getActionCommand() == "Lier à la liaison courante")
+        {
+
+            jpop.setVisible(false);
+
+        }
+        else if (e.getActionCommand() == "Suprimmer la liaison")
+        {
+
+            jpop.setVisible(false);
+
+        }
+        else if (e.getActionCommand() == "Nouvelle liaison")
+        {
+
+            jpop.setVisible(false);
+
+        }
+        else if (e.getActionCommand() == "Editer la fonction")
+        {
+
+            jpop.setVisible(false);
+
+        }
+        else if (e.getActionCommand() == "Annuler")
+        {
+
+            jpop.setVisible(false);
+        }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        if (e.getClickCount() == 1) {
-            int index = liste.locationToIndex(e.getPoint());
-            modeleDeListeLiaison.setElementAt(compteurLiaison, index);
-            compteurUtilisationLiaison++;
-            if (compteurUtilisationLiaison == 2) {
-                compteurUtilisationLiaison = 0;
-                compteurLiaison++;
+        if (e.getButton() == MouseEvent.BUTTON1){
+            if (e.getClickCount() == 1) {
+                int index = liste.locationToIndex(e.getPoint());
+                modeleDeListeLiaison.setElementAt(compteurLiaison, index);
+                compteurUtilisationLiaison++;
+                if (compteurUtilisationLiaison == 2) {
+                    compteurUtilisationLiaison = 0;
+                    compteurLiaison++;
+
+
+                }
             }
         }
+        else if (e.getButton() == MouseEvent.BUTTON3){
+            jpop = new JPopupMenu();
+            /*création des bouton du menu*/
+            JMenuItem menuLier = new JMenuItem( "Lier à la liaison courante" );
+            JMenuItem menuSupprimLiaison = new JMenuItem( "Suprimmer la liaison" );
+            JMenuItem menuNouvelleLiaison = new JMenuItem( "Nouvelle liaison" );
+            JMenuItem menuEditerFonction = new JMenuItem( "Editer la fonction" );
+            JMenuItem annulPopup = new JMenuItem( "Annuler" );
+
+            jpop.add(menuLier);
+            jpop.add(menuSupprimLiaison);
+            jpop.add(menuNouvelleLiaison);
+            jpop.add(menuEditerFonction);
+            jpop.add(annulPopup);
+
+            jpop.setLocation(e.getXOnScreen(), e.getYOnScreen());
+            jpop.setEnabled(true);
+            jpop.setVisible(true);
+
+            enableEvents(AWTEvent.MOUSE_EVENT_MASK);
+            menuLier.addActionListener( this);
+            menuSupprimLiaison.addActionListener( this);
+            menuNouvelleLiaison.addActionListener( this);
+            menuEditerFonction.addActionListener( this);
+            annulPopup.addActionListener( this);
+
+        }
     }
+
     @Override
     public void mousePressed(MouseEvent e) {
 
