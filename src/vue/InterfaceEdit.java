@@ -389,7 +389,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             jpop.add(menuEditerFonction);
             jpop.add(annulPopup);
 
-            jpop.setLocation(locate);
+            jpop.setLocation(e.getXOnScreen(),e.getYOnScreen());
             jpop.setEnabled(true);
             jpop.setVisible(true);
 
