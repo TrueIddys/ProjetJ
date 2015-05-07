@@ -164,7 +164,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
     private void initPanelMot(String fichierXML){
         createparser(fichierXML);
-        JTextArea texteExp = new JTextArea("Fleche gauche : rajouter au chunk \n Fleche du bas : ajouter à un nouveau chunk \n Fleche de haut : annuler la dernière opération");
+        JTextArea texteExp = new JTextArea("Fleche gauche : rajouter au chunk \n Fleche du bas : ajouter à un nouveau chunk "); /* Fleche de haut : annuler la dernière opération*/
         texteExp.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         texteExp.setBackground(new Color(73, 200, 232));
         texteExp.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -180,8 +180,6 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
 
             motCourant = listeMot.get(compteurChunk);
-            /*System.out.println(motCourant);
-            System.out.println(motCourant.getClass());*/
             ajouterPremierMot(motCourant);
     }
 
