@@ -39,6 +39,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private JPopupMenu jpopfounction;
     private int compteurChunk;
     private int compteurMot;
+    private Point locate;
 
     private List<Chunk> listeChunks;
     private DefaultListModel modeleDeListe;
@@ -324,35 +325,35 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         */
         else if (e.getActionCommand() == "Verbe")
         {
-            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            int index = liste.locationToIndex(locate);
             modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" v", index);
             jpop.setVisible(false);
             jpopfounction.setVisible(false);
         }
         else if (e.getActionCommand() == "Sujet")
         {
-            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            int index = liste.locationToIndex(locate);
             modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" s", index);
             jpop.setVisible(false);
             jpopfounction.setVisible(false);
         }
         else if (e.getActionCommand() == "Element qui suit un verbe")
         {
-            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            int index = liste.locationToIndex(locate);
             modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" _v", index);
             jpop.setVisible(false);
             jpopfounction.setVisible(false);
         }
         else if (e.getActionCommand() == "Element qui suit un sujet")
         {
-            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            int index = liste.locationToIndex(locate);
             modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" _s", index);
             jpop.setVisible(false);
             jpopfounction.setVisible(false);
         }
         else if (e.getActionCommand() == "Introducteur")
         {
-            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            int index = liste.locationToIndex(locate);
             modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" i", index);
             jpop.setVisible(false);
             jpopfounction.setVisible(false);
@@ -375,6 +376,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         }
         else if (e.getButton() == MouseEvent.BUTTON3){
             jpop = new JPopupMenu();
+            locate=e.getPoint();
             /*création des bouton du menu*/
             JMenuItem menuSupprimLiaison = new JMenuItem( "Suprimmer la liaison" );
             JMenuItem menuNouvelleLiaison = new JMenuItem( "Nouvelle liaison" );
@@ -387,7 +389,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             jpop.add(menuEditerFonction);
             jpop.add(annulPopup);
 
-            jpop.setLocation(e.getXOnScreen(), e.getYOnScreen());
+            jpop.setLocation(locate);
             jpop.setEnabled(true);
             jpop.setVisible(true);
 
