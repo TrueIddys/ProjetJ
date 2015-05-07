@@ -40,6 +40,9 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private int compteurChunk;
     private int compteurMot;
     private Point locate;
+    private Component composant;
+    private int x;
+    private int y;
 
     private List<Chunk> listeChunks;
     private DefaultListModel modeleDeListe;
@@ -78,7 +81,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         scrollPane.setBackground(new Color(73, 200, 232));
         scrollPane.getVerticalScrollBar().setModel(scrollPaneLiaison.getVerticalScrollBar().getModel());
 
-        listeLiaison.addMouseListener(this);
+        liste.addMouseListener(this);
         panelChunks.add(scrollPane);
         panelLiaison.add(scrollPaneLiaison);
 
@@ -95,11 +98,13 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
                                 } else if (ke.getID() == KeyEvent.KEY_PRESSED) {
 
                                     if (ke.getKeyCode() == KeyEvent.VK_LEFT) {
-                                        if (compteurMot < listeMot.size()) {
+                                        deplacerMot();
+
+                                    } else if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
+                                        if(compteurMot==0){
                                             deplacerMot();
                                         }
-                                    } else if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
-                                        if (compteurMot < listeMot.size()) {
+                                        else{
                                             deplacerChunk();
                                         }
 
@@ -129,12 +134,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         }*/
     }
 
-    private void deplacerMot() {
-        String motCourant = panelMot.getComponent(0).getName();
-        modeleDeListe.setElementAt(((String) modeleDeListe.lastElement()).concat(" " + motCourant), modeleDeListe.getSize() - 1);
-        changerMot();
 
-    }
 
     /**
      * Fonction qui change de mot après avoir appuyé sur une des fleches
@@ -148,6 +148,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             definirLabelMot(motCourant);
         }
         else{
+            compteurMot++;
             boutonFinir.setVisible(true);
             definirLabelMot("");
             return;
@@ -155,13 +156,31 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         }
 
 
+
+    }
+
+    private void deplacerMot() {
+        if(compteurMot<listeMot.size()) {
+            String motCourant = panelMot.getComponent(0).getName();
+            modeleDeListe.setElementAt(((String) modeleDeListe.lastElement()).concat(" " + motCourant), modeleDeListe.getSize() - 1);
+            changerMot();
+        }
+
     }
 
     private void deplacerChunk() {
-        compteurChunk++;
-        String motCourant = panelMot.getComponent(0).getName();
-        modeleDeListe.addElement(motCourant);
-        changerMot();
+
+        if(compteurMot==0){
+            String motCourant = panelMot.getComponent(0).getName();
+            modeleDeListe.setElementAt(((String) modeleDeListe.lastElement()).concat(" " + motCourant), modeleDeListe.getSize() - 1);
+            changerMot();
+        }
+        if(compteurMot<listeMot.size()){
+            compteurChunk++;
+            String motCourant = panelMot.getComponent(0).getName();
+            modeleDeListe.addElement(motCourant);
+            changerMot();
+        }
     }
 
     private void initPanelMot(String fichierXML){
@@ -214,7 +233,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
         panelMot = new JPanel();
         panelMot.setLayout(new BorderLayout());
-        panelMot.setBackground(new Color(60, 63, 65));
+        panelMot.setBackground(new Color(113, 125, 126));
 
 
     }
@@ -265,16 +284,16 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         /*
         * definition des action sur le menu contextuel
         */
-        else if (e.getActionCommand() == "Suprimmer la liaison")
+        else if (e.getActionCommand() == "Supprimer la liaison")
         {
-            int index = liste.locationToIndex(jpop.getLocationOnScreen());
-            modeleDeListeLiaison.setElementAt("", index);
+            int index = liste.locationToIndex(locate);
+            modeleDeListeLiaison.setElementAt(" ", index);
             jpop.setVisible(false);
 
         }
         else if (e.getActionCommand() == "Nouvelle liaison")
         {
-            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            int index = liste.locationToIndex(locate);
             compteurLiaison++;
             modeleDeListeLiaison.setElementAt(compteurLiaison, index);
             jpop.setVisible(false);
@@ -299,10 +318,8 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             jpopfounction.add(menuIntruducteur);
             jpopfounction.add(annulPopupFunction);
 
+            jpopfounction.show(composant,x,y);
 
-            jpopfounction.setLocation(jpop.getLocation());
-            jpopfounction.setEnabled(true);
-            jpopfounction.setVisible(true);
 
             enableEvents(AWTEvent.MOUSE_EVENT_MASK);
 
@@ -375,10 +392,14 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             }
         }
         else if (e.getButton() == MouseEvent.BUTTON3){
+
             jpop = new JPopupMenu();
             locate=e.getPoint();
+            composant = e.getComponent();
+            x = e.getX();
+            y = e.getY();
             /*création des bouton du menu*/
-            JMenuItem menuSupprimLiaison = new JMenuItem( "Suprimmer la liaison" );
+            JMenuItem menuSupprimLiaison = new JMenuItem( "Supprimer la liaison" );
             JMenuItem menuNouvelleLiaison = new JMenuItem( "Nouvelle liaison" );
             JMenuItem menuEditerFonction = new JMenuItem( "Editer la fonction" );
             JMenuItem annulPopup = new JMenuItem( "Annuler" );
@@ -389,9 +410,10 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             jpop.add(menuEditerFonction);
             jpop.add(annulPopup);
 
-            jpop.setLocation(e.getXOnScreen(),e.getYOnScreen());
-            jpop.setEnabled(true);
-            jpop.setVisible(true);
+
+
+            jpop.show(composant,x,y);
+
 
             enableEvents(AWTEvent.MOUSE_EVENT_MASK);
 
