@@ -36,7 +36,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private Chunk chunkCourant;
     private String motCourant;
     private JPopupMenu jpop;
-
+    private JPopupMenu jpopfounction;
     private int compteurChunk;
     private int compteurMot;
 
@@ -45,7 +45,6 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private DefaultListModel modeleDeListeLiaison;
 
     private int compteurLiaison = 1;
-    private int compteurUtilisationLiaison = 0;
 
     /*Initialisation de la fenêtre */
     public InterfaceEdit(String fichierXML){
@@ -78,9 +77,10 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         scrollPane.setBackground(new Color(73, 200, 232));
         scrollPane.getVerticalScrollBar().setModel(scrollPaneLiaison.getVerticalScrollBar().getModel());
 
-        liste.addMouseListener(this);
+        listeLiaison.addMouseListener(this);
         panelChunks.add(scrollPane);
         panelLiaison.add(scrollPaneLiaison);
+
     }
 
     private void ajouterListener()
@@ -226,7 +226,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         fenetreDeFin = new JDialog(this);
         JPanel panelDeFin = new JPanel(new BorderLayout());
         JTextArea texteDeFin = new JTextArea();
-        texteDeFin.setText("Vous avez terminé l'édition du corpus , celui peut etre retrouver dans les fichiers du jeu.");
+        texteDeFin.setText("Vous avez terminé l'edition du corpus , celui peut etre retrouver dans les fichiers du jeu.");
         JButton boutonOk = new JButton("OK");
         boutonOk.setVerticalAlignment(SwingConstants.CENTER);
         boutonOk.setHorizontalAlignment(SwingConstants.CENTER);
@@ -261,28 +261,106 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             this.dispose();
 
         }
+        /*
+        * definition des action sur le menu contextuel
+        */
         else if (e.getActionCommand() == "Suprimmer la liaison")
         {
-
+            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            modeleDeListeLiaison.setElementAt("", index);
             jpop.setVisible(false);
 
         }
         else if (e.getActionCommand() == "Nouvelle liaison")
         {
-
+            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            compteurLiaison++;
+            modeleDeListeLiaison.setElementAt(compteurLiaison, index);
             jpop.setVisible(false);
 
         }
         else if (e.getActionCommand() == "Editer la fonction")
         {
+            jpopfounction = new JPopupMenu();
+            /*création des bouton du menu de founction*/
+            JMenuItem menuVerbe = new JMenuItem( "Verbe" );
+            JMenuItem menuSujet = new JMenuItem( "Sujet" );
+            JMenuItem menuSuiviVerbe = new JMenuItem( "Element qui suit un verbe" );
+            JMenuItem menuSuiviSujet = new JMenuItem( "Element qui suit un sujet" );
+            JMenuItem menuIntruducteur = new JMenuItem( "Intruducteur");
+            JMenuItem annulPopupFunction = new JMenuItem( "Annuler l'edition" );
 
-            jpop.setVisible(false);
+
+            jpopfounction.add(menuVerbe);
+            jpopfounction.add(menuSujet);
+            jpopfounction.add(menuSuiviVerbe);
+            jpopfounction.add(menuSuiviSujet);
+            jpopfounction.add(menuIntruducteur);
+            jpopfounction.add(annulPopupFunction);
+
+
+            jpopfounction.setLocation(jpop.getLocation());
+            jpopfounction.setEnabled(true);
+            jpopfounction.setVisible(true);
+
+            enableEvents(AWTEvent.MOUSE_EVENT_MASK);
+
+            menuVerbe.addActionListener(this);
+            menuSujet.addActionListener(this);
+            menuSuiviVerbe.addActionListener( this);
+            menuSuiviSujet.addActionListener( this);
+            menuIntruducteur.addActionListener( this);
+            annulPopupFunction.addActionListener(this);
+
 
         }
         else if (e.getActionCommand() == "Annuler")
         {
 
             jpop.setVisible(false);
+        }
+        /*
+        * definition des action sur le menu de fonction
+        */
+        else if (e.getActionCommand() == "Verbe")
+        {
+            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" v", index);
+            jpop.setVisible(false);
+            jpopfounction.setVisible(false);
+        }
+        else if (e.getActionCommand() == "Sujet")
+        {
+            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" s", index);
+            jpop.setVisible(false);
+            jpopfounction.setVisible(false);
+        }
+        else if (e.getActionCommand() == "Element qui suit un verbe")
+        {
+            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" _v", index);
+            jpop.setVisible(false);
+            jpopfounction.setVisible(false);
+        }
+        else if (e.getActionCommand() == "Element qui suit un sujet")
+        {
+            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" _s", index);
+            jpop.setVisible(false);
+            jpopfounction.setVisible(false);
+        }
+        else if (e.getActionCommand() == "Introducteur")
+        {
+            int index = liste.locationToIndex(jpop.getLocationOnScreen());
+            modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" i", index);
+            jpop.setVisible(false);
+            jpopfounction.setVisible(false);
+        }
+        else if (e.getActionCommand() == "Annuler l'edition")
+        {
+
+            jpopfounction.setVisible(false);
         }
     }
 
@@ -293,13 +371,6 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             if (e.getClickCount() == 1) {
                 int index = liste.locationToIndex(e.getPoint());
                 modeleDeListeLiaison.setElementAt(compteurLiaison, index);
-                compteurUtilisationLiaison++;
-                if (compteurUtilisationLiaison == 2) {
-                    compteurUtilisationLiaison = 0;
-                    compteurLiaison++;
-
-
-                }
             }
         }
         else if (e.getButton() == MouseEvent.BUTTON3){
