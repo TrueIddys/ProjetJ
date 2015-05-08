@@ -1,18 +1,20 @@
 package vue;
 
 import controleur.CreateParser;
+import controleur.ParserInverse;
 import controleur.Utilities;
 import modele.Chunk;
 import modele.Corpus;
-import sun.font.TrueTypeFont;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
-import javax.swing.plaf.DimensionUIResource;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+
 /**
  * Created by SIN on 27/04/2015.
  *
@@ -33,7 +35,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private JDialog fenetreDeFin;
     private JLabel mot;
     private List < String > listeMot;
-    private Chunk chunkCourant;
+
     private String motCourant;
     private JPopupMenu jpop;
     private JPopupMenu jpopfounction;
@@ -43,8 +45,8 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private Component composant;
     private int x;
     private int y;
+    private String nomfichier;
 
-    private List<Chunk> listeChunks;
     private DefaultListModel modeleDeListe;
     private DefaultListModel modeleDeListeLiaison;
 
@@ -58,8 +60,14 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         initListe();
         initPanelMot(fichierXML);
         ajouterListener();
-
+        nomfichier = fichierXML;
     }
+
+    /*
+    * Initialisation des listes pour les chunk et les liaison ,
+    * cette methode nous permet de définir la zone possible pour l'utilisation de la souris
+    * mais également des mettre des scrollsbar à nos 2 listes , celles si seront liées afin de pouvoir défiler ensemble
+    */
 
     private void initListe()
     {
@@ -87,8 +95,13 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
     }
 
-    private void ajouterListener()
-    {
+    /*
+    * Cette methode permet d'activer le contenu interactif ,
+    * on y retrouve les intéractions de boutons ainsi que les intéractions avec
+    * les flêches qui activent différentes méthodes
+    */
+
+    private void ajouterListener() {
         Toolkit.getDefaultToolkit().addAWTEventListener
                 (
                         new AWTEventListener() {
@@ -101,17 +114,12 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
                                         deplacerMot();
 
                                     } else if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
-                                        if(compteurMot==0){
+                                        if (compteurMot == 0) {
                                             deplacerMot();
-                                        }
-                                        else{
+                                        } else {
                                             deplacerChunk();
                                         }
 
-                                    } else if (ke.getKeyCode() == KeyEvent.VK_UP) {
-                                        if (compteurMot > 0) {
-                                            annuler();
-                                        }
 
                                     }
 
@@ -121,23 +129,12 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
                 );
 
         boutonRetour.addActionListener(this);
+        boutonFinir.addActionListener(this);
     }
-
-    private void annuler() {
-
-        /*compteurMot--;
-        motCourant = listeMot.get(compteurMot);
-        definirLabelMot(motCourant);
-        modeleDeListe.setElementAt(((String) modeleDeListe.lastElement()).subSequence(0, (int) modeleDeListe.lastElement()).length()- motCourant.length()- 1, modeleDeListe.getSize() - 1);
-        if(((String) modeleDeListe.lastElement()).isEmpty()){
-            compteurChunk--;
-        }*/
-    }
-
 
 
     /**
-     * Fonction qui change de mot après avoir appuyé sur une des fleches
+     * Fonction qui change de mot après avoir appuyé sur une des fleches après avoir ajouté un mots ou un chunk
      */
     private void changerMot() {
 
@@ -149,6 +146,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         }
         else{
             compteurMot++;
+
             boutonFinir.setVisible(true);
             definirLabelMot("");
             return;
@@ -159,6 +157,9 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
     }
 
+    /*
+     * Cette fonction permet de placer un mot sur le chunk actuel (la dernière ligne de la liste des chunks)
+     */
     private void deplacerMot() {
         if(compteurMot<listeMot.size()) {
             String motCourant = panelMot.getComponent(0).getName();
@@ -168,13 +169,12 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
     }
 
+    /*
+    * Cette fonction permet de placer un mot sur un chunk supplémentaire
+    */
     private void deplacerChunk() {
 
-        if(compteurMot==0){
-            String motCourant = panelMot.getComponent(0).getName();
-            modeleDeListe.setElementAt(((String) modeleDeListe.lastElement()).concat(" " + motCourant), modeleDeListe.getSize() - 1);
-            changerMot();
-        }
+
         if(compteurMot<listeMot.size()){
             compteurChunk++;
             String motCourant = panelMot.getComponent(0).getName();
@@ -183,9 +183,18 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         }
     }
 
+    /*
+    * Initialisation du panel de mot , on y retrouve la methode appelant le parseur qui retourne une liste de mot complête
+    * du fichier Xml choisit à la vue précédente
+    *
+    * voir dans Edit "InterfaceEdit interfaceEdit  = new InterfaceEdit(e.getActionCommand());"
+    *
+    * e.getActionCommand() retourne le nom du bouton sur lequel on a cliqué
+    */
     private void initPanelMot(String fichierXML){
         createparser(fichierXML);
-        JTextArea texteExp = new JTextArea("Fleche gauche : rajouter au chunk \n Fleche du bas : ajouter à un nouveau chunk "); /* Fleche de haut : annuler la dernière opération*/
+        JTextArea texteExp = new JTextArea("Fleche gauche : rajouter au chunk \n Fleche du bas : ajouter a un nouveau chunk \n" +
+                "Faites un clic droit sur le chunk pour les liaisons et fonctions ");
         texteExp.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         texteExp.setBackground(new Color(73, 200, 232));
         texteExp.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -193,6 +202,10 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
 
     }
+
+    /*
+     * Methode qui appele le parseur
+     */
 
     private void createparser(String fichierXML){
         CreateParser createparseur = new CreateParser(fichierXML);
@@ -204,6 +217,9 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             ajouterPremierMot(motCourant);
     }
 
+    /*
+     * Methode qui ajoute le premier mot , cette methode est utilisé pour initialiser la vue
+     */
     public void ajouterPremierMot(String texte){
         mot = new JLabel();
         definirLabelMot(texte);
@@ -219,6 +235,8 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         mot.setText(nom);
 
     }
+
+    /* Définition des panels (puisqu'il sont creer par nous même): voir sur "Edit.form" l'option "custom create"*/
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
@@ -246,7 +264,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         fenetreDeFin = new JDialog(this);
         JPanel panelDeFin = new JPanel(new BorderLayout());
         JTextArea texteDeFin = new JTextArea();
-        texteDeFin.setText("Vous avez terminé l'edition du corpus , celui peut etre retrouver dans les fichiers du jeu.");
+        texteDeFin.setText("Vous avez terminé l'edition du corpus , celui-ci peut être retrouver dans les fichiers du jeu.");
         JButton boutonOk = new JButton("OK");
         boutonOk.setVerticalAlignment(SwingConstants.CENTER);
         boutonOk.setHorizontalAlignment(SwingConstants.CENTER);
@@ -261,30 +279,111 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        /*
+        * Le bouton fin doit creer une liste de chunk (corpus) afin de pouvoir utiliser un parseur inversé
+        * pour creer un fichier Xml utilisable dans le mode de jeu
+        */
+
         if (e.getActionCommand() == "Fin")
         {
+            Corpus corpus = new Corpus();
 
-            for(int i=0;i<compteurChunk;i++ ){
+            for(int i=0;i<=compteurChunk;i++ ){
+                /*Parcourt des chunk et on instancie la classe chunk à chaque parcourt*/
                 Chunk chunck = new Chunk();
-                chunck.settype("");
-                chunck.setchunk("c"+ i);
-                listeChunks.add(chunck);
-            }
-            /*ici on a le parser inverse : on va utiliser une methode qui creer le fichier*/
+
+
+                /*récupération des liaison dans la liste des liaisons afin de définir les liason et le type de chaque chunk*/
+
+                if(modeleDeListeLiaison.getElementAt(i).toString().matches(".*(s|i|v).*")){
+                    String element = modeleDeListeLiaison.getElementAt(i).toString();
+                    String type;
+                    type = element.replaceAll("0|1|2|3|4|5|6|7|8|9", "");
+                    chunck.settype(type);
+                }
+                else
+                {
+                    String element = modeleDeListeLiaison.getElementAt(i).toString();
+                    chunck.settype(element);
+
+
+                }
+
+                chunck.setchunk("c" + i);
+
+                /*récupération de tout les mots de chaque chunk dans la liste de chunk
+                afin de les ajouter au chunk sous forme de liste */
+
+                String elementmot = modeleDeListe.getElementAt(i).toString();
+
+                String mot = "" ;
+                for(int j =0;j<elementmot.length();j++){
+
+                    /*Si c'est un espace (fin d'un mot) on ajoute le mot à la liste*/
+
+                    if (elementmot.charAt(j) == ' '){
+                        if(mot!="") {
+                            chunck.addMot(mot);
+                            mot = "" ;
+                        }
+                    }
+
+                    /*Si c'est une ponctuation on l'ajoute directement*/
+
+                    else if (elementmot.substring(j,j+1).matches("^a-Z")) {
+
+                        mot = elementmot.substring(j,j+1);
+                        chunck.addMot(mot);
+                        mot = "" ;
+
+                    }
+
+                    /*Si c'est le dernier charactère d'un chunk on ajoute le mot construit*/
+
+                    else if (j==elementmot.length()-1){
+                        mot = mot+elementmot.substring(j,j+1);
+                        chunck.addMot(mot);
+                        mot = "" ;
+                    }
+
+                    /*Sinon on continue à concaténé les charactères */
+
+                    else{
+                        mot = mot+elementmot.substring(j,j+1) ;
+                    }
+
+                }
+
+
+                /*Maintenant on insère chaque chunk au corpus instancié au début de la méthode*/
+
+                corpus.addChunk(chunck);
+                }
+
+
+            /*ici on a  le parser inverse  , on va utiliser ses methodes pour creer le fichier*/
+
+            ParserInverse parserinv = new ParserInverse(corpus,nomfichier);
+
+
+
 
             this.dispose();
             Edit edit = new Edit();
         }
+        /*
+         * Bouton Retour
+         */
         else if (e.getActionCommand() == "Retour")
         {
-            /*Edit edit = new Edit();*/
             this.dispose();
 
         }
         /*
         * definition des action sur le menu contextuel
         */
-        else if (e.getActionCommand() == "Supprimer la liaison")
+        else if (e.getActionCommand() == "Supprimer")
         {
             int index = liste.locationToIndex(locate);
             modeleDeListeLiaison.setElementAt(" ", index);
@@ -299,15 +398,23 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             jpop.setVisible(false);
 
         }
+        /*
+        * Menu dans le menu contextuel , c'est le menu d'édition de fonction du chunk,
+        * Ce menu affecte la ligne oû l'utilisateur à fait un clic droit pour premier menu contextuel.
+        *
+        *
+        */
         else if (e.getActionCommand() == "Editer la fonction")
         {
+            /*On instancie le menu*/
             jpopfounction = new JPopupMenu();
+
             /*création des bouton du menu de founction*/
             JMenuItem menuVerbe = new JMenuItem( "Verbe" );
             JMenuItem menuSujet = new JMenuItem( "Sujet" );
             JMenuItem menuSuiviVerbe = new JMenuItem( "Element qui suit un verbe" );
             JMenuItem menuSuiviSujet = new JMenuItem( "Element qui suit un sujet" );
-            JMenuItem menuIntruducteur = new JMenuItem( "Intruducteur");
+            JMenuItem menuIntruducteur = new JMenuItem( "Introducteur");
             JMenuItem annulPopupFunction = new JMenuItem( "Annuler l'edition" );
 
 
@@ -318,6 +425,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             jpopfounction.add(menuIntruducteur);
             jpopfounction.add(annulPopupFunction);
 
+            /*affichage du menu*/
             jpopfounction.show(composant,x,y);
 
 
@@ -384,13 +492,20 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        /*
+        * Ajout de liaison sur le clic gauche
+        */
         if (e.getButton() == MouseEvent.BUTTON1){
             if (e.getClickCount() == 1) {
                 int index = liste.locationToIndex(e.getPoint());
                 modeleDeListeLiaison.setElementAt(compteurLiaison, index);
             }
         }
+        /*
+        * Création du menu contextuel
+        * C'est le même sysême de menu que pour editer les fonctions
+        *
+        */
         else if (e.getButton() == MouseEvent.BUTTON3){
 
             jpop = new JPopupMenu();
@@ -398,8 +513,9 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             composant = e.getComponent();
             x = e.getX();
             y = e.getY();
+
             /*création des bouton du menu*/
-            JMenuItem menuSupprimLiaison = new JMenuItem( "Supprimer la liaison" );
+            JMenuItem menuSupprimLiaison = new JMenuItem( "Supprimer" );
             JMenuItem menuNouvelleLiaison = new JMenuItem( "Nouvelle liaison" );
             JMenuItem menuEditerFonction = new JMenuItem( "Editer la fonction" );
             JMenuItem annulPopup = new JMenuItem( "Annuler" );
@@ -411,7 +527,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             jpop.add(annulPopup);
 
 
-
+            /*affichage du menu*/
             jpop.show(composant,x,y);
 
 

@@ -11,12 +11,18 @@ import java.util.List;
 
 /**
  * Created by SIN on 27/04/2015.
+ *
+ * Ce parser à pour fonction de récupérer un fichier xml utilisé spécialement pour le mode d'édition
+ * pour récupérer tout les mots et ponctuation dans une liste.
+ *
  */
 public class CreateParser {
     static org.jdom2.Document document;
     static Element racine;
 
     public CreateParser(String fichierXml){
+
+        /*Le contructeur permet de définir le chemin du fichier*/
 
         String debutChemin = "src/xml/";
         String cheminComplet = debutChemin.concat(fichierXml);
@@ -51,7 +57,6 @@ public class CreateParser {
                 listeMots.add(courantMot.getText());
             }
         }
-        /*System.out.println(listeMots);*/
         return listeMots; //on retourne la liste de mots.
     }
 }

@@ -1,46 +1,30 @@
 package modele;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Maxime on 02/03/2015.
- */
 public class Corpus {
+    private List<Chunk> liste;
 
-    /*Attributs*/
 
-    private String xmlFile;
+    public Corpus(){
+        liste = new ArrayList();
 
-    public String getXmlFile() {
-        return xmlFile;
+
     }
 
-    private void setXmlFile(String xmlFile) {
-        this.xmlFile = xmlFile;
+    public void addChunk(Chunk chunk)
+    {
+        liste.add(chunk);
     }
 
-    /*_____________*/
-
-    private List<Chunk> listeChunks;
-    /* private List<String> typeChunks; */
-    public List<Chunk> getListeChunks() {
-        return listeChunks;
+    public List<Chunk> getListe() {
+        return liste;
     }
 
-    public void setListeChunks(List<Chunk> listeChunks) {
-        this.listeChunks = listeChunks;
-    }
-
-    /*_________________________________________*/
-
-
-    public Corpus(String xml){
-        this.xmlFile = xml;
-    }
-
-    private String parser(String xmlFile) {
-
-        return "lolol";
+    public int getsize() {
+        return liste.size();
     }
 
 

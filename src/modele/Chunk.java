@@ -40,6 +40,14 @@ public class Chunk {
         return listeMots;
     }
 
+    public String gettype() {
+        return type;
+    }
+
+    public String getid() {
+        return id;
+    }
+
     public String getDernierMot()
     {
         return listeMots.get(listeMots.size()-1);

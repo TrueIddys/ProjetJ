@@ -21,22 +21,21 @@ public class Edit extends JFrame implements ActionListener  {
     private List<File> listeFichier;
     private List<JButton> listeButtonFichier;
 
+    /*constructeur de la vue*/
     public Edit(){
         super();
         Utilities.initFenetre(this, edit);
-
         listeFichier = rechercheFichier();
         listeButtonFichier = new ArrayList<JButton>();
         creerBoutonFichier();
-
-
         ajouterActionListener();
     }
-
+    /*Cette methode permet d'activer le contenu interactif (ici le bouton de retour au menu)*/
     private void ajouterActionListener() {
         retourMenu.addActionListener(this);
     }
 
+    /*Cette méthode permet de creer des boutons intéractif au nom des fihiers traité*/
     private void creerBoutonFichier() {
         for (File file : listeFichier){
             JButton newButton = new JButton();
@@ -48,6 +47,10 @@ public class Edit extends JFrame implements ActionListener  {
         }
 
     }
+
+    /*Cette methode creer une liste des fichiers à traiter afin de creer un menu intéractif,
+    * puisqu'il s'agit de la partie d'édition , tout les fichier traité et affiché finirons par "_pour_edition.xml"
+    */
 
     private List<File> rechercheFichier() {
         List<File> listeFichiers = new ArrayList<File>();
@@ -62,6 +65,7 @@ public class Edit extends JFrame implements ActionListener  {
         return listeFichiers;
     }
 
+    /*récupération des signaux envoyé par les boutons*/
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -76,6 +80,7 @@ public class Edit extends JFrame implements ActionListener  {
 
         }
     }
+    /* Définition des panels (puisqu'il sont creer par nous même): voir sur "Edi.form" l'option "custom create"*/
 
     private void createUIComponents() {
         choixEdit = new JPanel();
