@@ -121,7 +121,7 @@ public class ParserInverse
             final Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.INDENT, "no");
             transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "dr.dtd");
 
             final DOMSource source = new DOMSource(document);

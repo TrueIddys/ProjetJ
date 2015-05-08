@@ -13,13 +13,6 @@ import javax.swing.border.EtchedBorder;
 import java.util.List;
 
 
-/**
- * Created by SIN on 27/04/2015.
- *
- * travail à faire : initialiser les liste , créer une liste de mots ,
- * creer un parseur inversé (class createparser)
- *
- */
 
 public class InterfaceEdit extends JFrame implements ActionListener, MouseListener{
     private JPanel interfaceEdit;
