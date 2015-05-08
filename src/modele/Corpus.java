@@ -23,6 +23,10 @@ public class Corpus {
         return liste;
     }
 
+    public Chunk getChunk(int i){
+        return liste.get(i);
+    }
+
     public int getsize() {
         return liste.size();
     }

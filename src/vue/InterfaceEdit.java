@@ -194,7 +194,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private void initPanelMot(String fichierXML){
         createparser(fichierXML);
         JTextArea texteExp = new JTextArea("Fleche gauche : rajouter au chunk \n Fleche du bas : ajouter a un nouveau chunk \n" +
-                "Faites un clic droit sur le chunk pour les liaisons et fonctions ");
+                "Une fois tout les mots en place , faites un clic droit sur un chunk pour ses liaisons et fonctions ");
         texteExp.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         texteExp.setBackground(new Color(73, 200, 232));
         texteExp.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -287,30 +287,45 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
         if (e.getActionCommand() == "Fin")
         {
+            /*On modifie les liste suivants les liaisons afin d'obtenir la valeur attendue pour chunk.type*/
+
+            for(int i=0;i<=compteurChunk;i++ ){
+                String test = modeleDeListeLiaison.getElementAt(i).toString();
+                System.out.println(modeleDeListeLiaison.getElementAt(i).toString());
+                if(modeleDeListeLiaison.getElementAt(i).toString().matches(".*(0|1|2|3|4|5|6|7|8|9)( s| i| v| _s| _v).*")){
+
+                    String element1 = modeleDeListeLiaison.getElementAt(i).toString();
+                    modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.getElementAt(i).toString().replaceAll("0|1|2|3|4|5|6|7|8|9| |", ""), i);
+                    String liaison = element1.replaceAll("i|v|s|_| |", "");
+                    for(int j=0;j<=compteurChunk;j++ ){
+                        if(modeleDeListeLiaison.getElementAt(j).toString().equals(liaison)){
+                            modeleDeListeLiaison.setElementAt("c"+i,j);
+                        }
+                    }
+                }
+
+                else if(test.equals("  _s")||test.equals("  _v")||test.equals("  s")||test.equals("  v")||test.equals("  i")){
+                    System.out.println(1);
+                    modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.getElementAt(i).toString().replaceAll(" ", ""),i);
+                }
+            }
+
+
+
+
+
             Corpus corpus = new Corpus();
 
             for(int i=0;i<=compteurChunk;i++ ){
                 /*Parcourt des chunk et on instancie la classe chunk à chaque parcourt*/
                 Chunk chunck = new Chunk();
+                chunck.setchunk("c" +i);
 
 
-                /*récupération des liaison dans la liste des liaisons afin de définir les liason et le type de chaque chunk*/
-
-                if(modeleDeListeLiaison.getElementAt(i).toString().matches(".*(s|i|v).*")){
-                    String element = modeleDeListeLiaison.getElementAt(i).toString();
-                    String type;
-                    type = element.replaceAll("0|1|2|3|4|5|6|7|8|9", "");
-                    chunck.settype(type);
-                }
-                else
-                {
-                    String element = modeleDeListeLiaison.getElementAt(i).toString();
-                    chunck.settype(element);
+                String element = modeleDeListeLiaison.getElementAt(i).toString();
+                chunck.settype(element);
 
 
-                }
-
-                chunck.setchunk("c" + i);
 
                 /*récupération de tout les mots de chaque chunk dans la liste de chunk
                 afin de les ajouter au chunk sous forme de liste */
@@ -354,6 +369,9 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
                     }
 
                 }
+                System.out.println(chunck.getListeMots());
+                System.out.println(chunck.gettype());
+                System.out.println(chunck.getid());
 
 
                 /*Maintenant on insère chaque chunk au corpus instancié au début de la méthode*/
@@ -497,8 +515,10 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         */
         if (e.getButton() == MouseEvent.BUTTON1){
             if (e.getClickCount() == 1) {
-                int index = liste.locationToIndex(e.getPoint());
-                modeleDeListeLiaison.setElementAt(compteurLiaison, index);
+                if(compteurMot >= listeMot.size()) {
+                    int index = liste.locationToIndex(e.getPoint());
+                    modeleDeListeLiaison.setElementAt(compteurLiaison, index);
+                }
             }
         }
         /*
@@ -507,37 +527,38 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         *
         */
         else if (e.getButton() == MouseEvent.BUTTON3){
+            if(compteurMot >= listeMot.size()) {
 
-            jpop = new JPopupMenu();
-            locate=e.getPoint();
-            composant = e.getComponent();
-            x = e.getX();
-            y = e.getY();
+                jpop = new JPopupMenu();
+                locate = e.getPoint();
+                composant = e.getComponent();
+                x = e.getX();
+                y = e.getY();
 
             /*création des bouton du menu*/
-            JMenuItem menuSupprimLiaison = new JMenuItem( "Supprimer" );
-            JMenuItem menuNouvelleLiaison = new JMenuItem( "Nouvelle liaison" );
-            JMenuItem menuEditerFonction = new JMenuItem( "Editer la fonction" );
-            JMenuItem annulPopup = new JMenuItem( "Annuler" );
+                JMenuItem menuSupprimLiaison = new JMenuItem("Supprimer");
+                JMenuItem menuNouvelleLiaison = new JMenuItem("Nouvelle liaison");
+                JMenuItem menuEditerFonction = new JMenuItem("Editer la fonction");
+                JMenuItem annulPopup = new JMenuItem("Annuler");
 
 
-            jpop.add(menuSupprimLiaison);
-            jpop.add(menuNouvelleLiaison);
-            jpop.add(menuEditerFonction);
-            jpop.add(annulPopup);
+                jpop.add(menuSupprimLiaison);
+                jpop.add(menuNouvelleLiaison);
+                jpop.add(menuEditerFonction);
+                jpop.add(annulPopup);
 
 
             /*affichage du menu*/
-            jpop.show(composant,x,y);
+                jpop.show(composant, x, y);
 
 
-            enableEvents(AWTEvent.MOUSE_EVENT_MASK);
+                enableEvents(AWTEvent.MOUSE_EVENT_MASK);
 
-            menuSupprimLiaison.addActionListener( this);
-            menuNouvelleLiaison.addActionListener( this);
-            menuEditerFonction.addActionListener( this);
-            annulPopup.addActionListener( this);
-
+                menuSupprimLiaison.addActionListener(this);
+                menuNouvelleLiaison.addActionListener(this);
+                menuEditerFonction.addActionListener(this);
+                annulPopup.addActionListener(this);
+            }
         }
     }
 
