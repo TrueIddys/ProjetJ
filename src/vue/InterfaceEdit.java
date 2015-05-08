@@ -10,10 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.border.EtchedBorder;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+
 
 /**
  * Created by SIN on 27/04/2015.
@@ -32,7 +30,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private JButton boutonRetour;
     private JList liste;
     private JList listeLiaison;
-    private JDialog fenetreDeFin;
+
     private JLabel mot;
     private List < String > listeMot;
 
@@ -147,7 +145,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
         else{
             compteurMot++;
 
-            boutonFinir.setVisible(true);
+
             definirLabelMot("");
             return;
 
@@ -194,7 +192,8 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     private void initPanelMot(String fichierXML){
         createparser(fichierXML);
         JTextArea texteExp = new JTextArea("Fleche gauche : rajouter au chunk \n Fleche du bas : ajouter a un nouveau chunk \n" +
-                "Une fois tout les mots en place , faites un clic droit sur un chunk pour ses liaisons et fonctions ");
+                "Une fois tout les mots en place , faites un clic droit sur un chunk pour ses liaisons et fonctions  \n " +
+                "Une fois touts les chunks parametres un bouton de fin va apparaitre");
         texteExp.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         texteExp.setBackground(new Color(73, 200, 232));
         texteExp.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -236,6 +235,20 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
     }
 
+    /*verification si le bouton fin peu apparaitre*/
+    public void finVisible(){
+
+        int fin = 0;
+        for(int i=0;i<=compteurChunk;i++ ){
+            if(modeleDeListeLiaison.getElementAt(i).equals("")||modeleDeListeLiaison.getElementAt(i).equals(" ")){
+                fin = 1;
+            }
+        }
+        if(fin==0)
+            boutonFinir.setVisible(true);
+    }
+
+
     /* Définition des panels (puisqu'il sont creer par nous même): voir sur "Edit.form" l'option "custom create"*/
 
     private void createUIComponents() {
@@ -257,26 +270,6 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
     }
 
 
-    /**
-     * Méthode qui initialise la fenêtre de fin
-     */
-    private void ecranDeFin() {
-        fenetreDeFin = new JDialog(this);
-        JPanel panelDeFin = new JPanel(new BorderLayout());
-        JTextArea texteDeFin = new JTextArea();
-        texteDeFin.setText("Vous avez terminé l'edition du corpus , celui-ci peut être retrouver dans les fichiers du jeu.");
-        JButton boutonOk = new JButton("OK");
-        boutonOk.setVerticalAlignment(SwingConstants.CENTER);
-        boutonOk.setHorizontalAlignment(SwingConstants.CENTER);
-        boutonOk.addActionListener(this);
-        panelDeFin.add(texteDeFin, BorderLayout.NORTH);
-        panelDeFin.add(boutonOk, BorderLayout.SOUTH);
-        fenetreDeFin.add(panelDeFin);
-        fenetreDeFin.pack();
-        fenetreDeFin.setLocationRelativeTo(null);
-        fenetreDeFin.setVisible(true);
-
-    }
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -287,11 +280,12 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
 
         if (e.getActionCommand() == "Fin")
         {
+
             /*On modifie les liste suivants les liaisons afin d'obtenir la valeur attendue pour chunk.type*/
 
             for(int i=0;i<=compteurChunk;i++ ){
                 String test = modeleDeListeLiaison.getElementAt(i).toString();
-                System.out.println(modeleDeListeLiaison.getElementAt(i).toString());
+
                 if(modeleDeListeLiaison.getElementAt(i).toString().matches(".*(0|1|2|3|4|5|6|7|8|9)( s| i| v| _s| _v).*")){
 
                     String element1 = modeleDeListeLiaison.getElementAt(i).toString();
@@ -305,7 +299,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
                 }
 
                 else if(test.equals("  _s")||test.equals("  _v")||test.equals("  s")||test.equals("  v")||test.equals("  i")){
-                    System.out.println(1);
+
                     modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.getElementAt(i).toString().replaceAll(" ", ""),i);
                 }
             }
@@ -369,9 +363,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
                     }
 
                 }
-                System.out.println(chunck.getListeMots());
-                System.out.println(chunck.gettype());
-                System.out.println(chunck.getid());
+
 
 
                 /*Maintenant on insère chaque chunk au corpus instancié au début de la méthode*/
@@ -406,6 +398,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             int index = liste.locationToIndex(locate);
             modeleDeListeLiaison.setElementAt(" ", index);
             jpop.setVisible(false);
+            boutonFinir.setVisible(false);
 
         }
         else if (e.getActionCommand() == "Nouvelle liaison")
@@ -414,6 +407,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             compteurLiaison++;
             modeleDeListeLiaison.setElementAt(compteurLiaison, index);
             jpop.setVisible(false);
+            finVisible();
 
         }
         /*
@@ -472,6 +466,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" v", index);
             jpop.setVisible(false);
             jpopfounction.setVisible(false);
+            finVisible();
         }
         else if (e.getActionCommand() == "Sujet")
         {
@@ -479,6 +474,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" s", index);
             jpop.setVisible(false);
             jpopfounction.setVisible(false);
+            finVisible();
         }
         else if (e.getActionCommand() == "Element qui suit un verbe")
         {
@@ -486,6 +482,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" _v", index);
             jpop.setVisible(false);
             jpopfounction.setVisible(false);
+            finVisible();
         }
         else if (e.getActionCommand() == "Element qui suit un sujet")
         {
@@ -493,6 +490,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" _s", index);
             jpop.setVisible(false);
             jpopfounction.setVisible(false);
+            finVisible();
         }
         else if (e.getActionCommand() == "Introducteur")
         {
@@ -500,6 +498,7 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
             modeleDeListeLiaison.setElementAt(modeleDeListeLiaison.elementAt(index)+" i", index);
             jpop.setVisible(false);
             jpopfounction.setVisible(false);
+            finVisible();
         }
         else if (e.getActionCommand() == "Annuler l'edition")
         {
@@ -518,9 +517,13 @@ public class InterfaceEdit extends JFrame implements ActionListener, MouseListen
                 if(compteurMot >= listeMot.size()) {
                     int index = liste.locationToIndex(e.getPoint());
                     modeleDeListeLiaison.setElementAt(compteurLiaison, index);
+
+                    finVisible();
                 }
             }
         }
+
+
         /*
         * Création du menu contextuel
         * C'est le même sysême de menu que pour editer les fonctions
