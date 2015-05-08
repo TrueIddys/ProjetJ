@@ -62,6 +62,7 @@ public class ParserInverse
             /*Création de toute les balise et du contenu*/
             /******************************************************************************************/
 
+            /*la balise fonction fils de "dr" , ses fils "f" et leurs attributs */
             Element fonctions = document.createElement("fonctions");
             racine.appendChild(fonctions);
 
@@ -81,6 +82,7 @@ public class ParserInverse
             fonctions.appendChild(sv);
             sv.setAttribute("id", "_v");
 
+            /*la balise "p (phrase) , fils de "dr" , ses fils seront "pd","pg","m" */
             Element p = document.createElement("p");
             racine.appendChild(p);
 
@@ -93,17 +95,22 @@ public class ParserInverse
                 chunk = corpus.getChunk(x);
                 for (int z = 0; z < chunk.getListeMots().size(); z++) {
 
+                    /*création de balises différentes suivant le contenu de la liste*/
+
                     if (chunk.getListeMots().get(z) == "(") {
+                        /*la balise pg (ponctuation gauche) */
                         Element pg = document.createElement("pg");
                         c.appendChild(pg);
                         pg.appendChild(document.createTextNode(chunk.getListeMots().get(z)));
                     }
                     else if (chunk.getListeMots().get(z).matches(".*([a-zA-Z]).*")) {
+                        /*la balise m (mot) */
                         Element m = document.createElement("m");
                         c.appendChild(m);
                         m.appendChild(document.createTextNode(chunk.getListeMots().get(z)));
                     }
                     else {
+                        /*la balise pd (ponctuation droite) */
                         Element pd = document.createElement("pd");
                         c.appendChild(pd);
                         pd.appendChild(document.createTextNode(chunk.getListeMots().get(z)));
